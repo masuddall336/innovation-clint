@@ -1,0 +1,63 @@
+.logo-slider{
+  width:100%;
+  overflow:hidden;
+  position:relative;
+  padding: 15px 0px;
+  /* border: 1px dashed green; */
+}
+
+/* premium fade effect on edges */
+.logo-slider::before,
+.logo-slider::after{
+  content:"";
+  position:absolute;
+  top:0;
+  width:120px;
+  height:100%;
+  z-index:2;
+}
+
+.logo-slider::before{
+  left:0;
+  background:linear-gradient(to right, white, transparent);
+}
+
+.logo-slider::after{
+  right:0;
+  background:linear-gradient(to left, white, transparent);
+}
+
+.logo-track{
+  display:flex;
+  align-items:center;
+  width:max-content;
+  gap:60px;
+  animation:scroll 30s linear infinite;
+}
+
+.logo-track:hover{
+  animation-play-state:paused;
+}
+
+.logo-item{
+  flex-shrink:0;
+}
+
+.logo-item img{
+  height:80px;
+  width:auto;
+  display:block;
+}
+
+/* seamless infinite animation */
+@keyframes scroll{
+
+  0%{
+    transform:translateX(0);
+  }
+
+  100%{
+    transform:translateX(-50%);
+  }
+
+}

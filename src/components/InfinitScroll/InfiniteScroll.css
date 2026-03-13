@@ -1,0 +1,29 @@
+.scroll-container {
+  width: 100%;
+  overflow: hidden;
+  background-color: #f0f0f0; /* optional */
+  padding: 10px 0;
+}
+
+.scroll-track {
+  display: flex;
+  width: max-content;
+  animation: scrollLeft 20s linear infinite;
+}
+
+.scroll-img {
+  height: 100px; /* adjust as needed */
+  margin-right: 20px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+/* Animation */
+@keyframes scrollLeft {
+  0% {
+    transform: translateX(100%); /* start completely off the right side */
+  }
+  100% {
+    transform: translateX(-100%); /* move completely to the left */
+  }
+}

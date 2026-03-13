@@ -1,0 +1,192 @@
+/* ========================= */
+/* CARD BASE */
+.pack-card {
+  width: 100%;
+  border-radius: 5px;
+  overflow: hidden;
+  background: #fff;
+
+  /* initial state for entry animation */
+  opacity: 0;
+  transform: translateY(0px) scaleY(0);
+  border: 2px solid #d4d4d490;
+  transform-origin: bottom;
+  /* pivot point for hover scaling */
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.5s ease;
+}
+
+/* HOVER EFFECT */
+.pack-card:hover {
+  opacity: 1;
+transform: translateY(50px) scaleY(2.9);
+  box-shadow: 6px 4px 8px #999999;
+  /* grow slightly in height */
+  /* box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25); */
+}
+
+/* ANIMATION FOR CARD ENTRY */
+.animate-card {
+  animation: fadeUp 0.8s ease forwards;
+}
+
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0) scaleY(1);
+  }
+}
+
+/* ========================= */
+/* IMAGE CONTAINER */
+.card-image {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1/1;
+  overflow: hidden;
+  background: linear-gradient(135deg, #2c3e50, #4ca1af);
+}
+
+/* PRODUCT IMAGE WRAPPER */
+.img-wrapper {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.img-wrapper img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  transition: transform 0.5s ease;
+}
+
+/* SHADOW & GLASS REFLECTION */
+.img-shadow {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70%;
+  height: 15px;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.card-image:hover .img-shadow {
+  opacity: 1;
+}
+
+.glass-reflect {
+  position: absolute;
+  top: -120%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(120deg, transparent 40%, rgba(255, 255, 255, 0.35) 50%, transparent 60%);
+  opacity: 0;
+  transition: all 0.6s ease;
+}
+
+.card-image:hover .glass-reflect {
+  top: -30%;
+  left: 100%;
+  opacity: 1;
+}
+
+/* ========================= */
+/* BUTTON */
+.view-btn button {
+  font-size: clamp(0.7rem, 2vw, 1rem);
+}
+
+/* DETAILS */
+.details {
+  padding: 0.5rem;
+}
+
+.product-name-title {
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
+  font-weight: 800;
+  color: #3b4042;
+}
+
+.product-description {
+  font-size: clamp(0.8rem, 2vw, 1rem);
+  color: #7e7e7e;
+  font-weight: bold;
+}
+
+/* USER ACTION BUTTONS */
+.edit-btn,
+.delete-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.edit-btn {
+  border: 1px solid #ccc;
+  background: #fff;
+}
+
+.edit-btn:hover {
+  background: #f0f0f0;
+}
+
+.delete-btn {
+  background: #e53935;
+  color: #fff;
+}
+
+.delete-btn:hover {
+  background: #d32f2f;
+}
+
+/* ========================= */
+/* RESPONSIVE GRID */
+.products-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  /* default phone */
+  gap: 1rem;
+  padding: 1rem;
+}
+
+@media (min-width: 480px) {
+  .products-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* small */
+@media (min-width: 768px) {
+  .products-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* md */
+@media (min-width: 1024px) {
+  .products-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* lg */
+
+/* MOBILE FRIENDLY */
+@media (hover:none) {
+
+  .img-shadow,
+  .glass-reflect,
+  .view-btn {
+    opacity: 1;
+  }
+}

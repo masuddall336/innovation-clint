@@ -1,0 +1,349 @@
+nav{
+background-color:rgba(165,157,157,0.349);
+border:1px solid rgba(255,255,255,0.233);
+padding:0px 5px;
+backdrop-filter:blur(3px);
+box-shadow:1px 1px 5px rgba(73,72,72,0.301);
+transition:all 0.3s ease;
+}
+
+/* OVERLAY */
+
+.overlay{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,0.45);
+opacity:0;
+visibility:hidden;
+transition:0.3s ease;
+z-index:9;
+}
+
+.overlay.show{
+opacity:1;
+visibility:visible;
+}
+
+/* SOCIAL ICONS */
+
+#Social_icons img{
+border-radius:5px;
+background-color:#fff;
+transition:background-color .3s ease,box-shadow .3s ease,transform .25s ease;
+}
+
+#Social_icons img:hover{
+background-color:#00A651;
+box-shadow:5px 5px 5px rgb(90,88,88);
+transform:translateY(-2px);
+}
+
+/* DESKTOP NAV */
+
+.nav_main{
+list-style:none;
+}
+
+.nav_main li{
+position:relative;
+}
+
+.desktop_link{
+display:inline-block;
+padding:10px 5px;
+color:#fff;
+font-weight:bold;
+text-decoration:none;
+position:relative;
+background:none;
+border:none;
+cursor:pointer;
+}
+
+.desktop_link::after{
+content:'';
+position:absolute;
+left:0;
+bottom:0;
+height:3px;
+width:0%;
+background:linear-gradient(90deg,#01A652,#fff,#2E3192);
+transition:width .4s ease;
+border-radius:2px;
+}
+
+.desktop_link:hover::after,
+.desktop_link.active::after{
+width:100%;
+}
+
+/* ABOUT MENU */
+
+.about{
+position:relative;
+cursor:pointer;
+}
+
+.about_ul{
+position:absolute;
+top:100%;
+right:0;
+background-color:#777272a8;
+border-radius:5px;
+border:1px solid white;
+display:none;
+flex-direction:column;
+}
+
+.about:hover .about_ul{
+display:flex;
+}
+
+.about_ul li{
+color:white;
+font-weight:normal;
+}
+
+/* MOBILE MENU */
+
+#responsive{
+position:fixed;
+top:0;
+left:0;
+width:70%;
+height:100vh;
+background:#00a650e6;
+backdrop-filter:blur(10px);
+display:flex;
+flex-direction:column;
+transform:translateX(-150%);
+transition:transform .35s ease,opacity .35s ease;
+z-index:10000;
+opacity:0;
+overflow-y:auto;
+}
+
+#responsive.show{
+transform:translateX(0);
+opacity:1;
+}
+
+/* CLOSE ICON */
+
+#cross_icon{
+position:absolute;
+top:12px;
+right:12px;
+cursor:pointer;
+z-index:10001;
+transition:transform .3s ease;
+}
+
+#cross_icon:hover{
+transform:rotate(90deg);
+}
+
+/* MOBILE LOGO */
+
+#logo_part{
+display:flex;
+justify-content:center;
+align-items:center;
+padding:20px 0;
+border-bottom:2px solid white;
+}
+
+/* MOBILE MENU LIST */
+
+#reponsive_ul{
+width:100%;
+display:flex;
+flex-direction:column;
+}
+
+#reponsive_ul li{
+list-style:none;
+width:100%;
+}
+
+/* FULL CLICKABLE MOBILE LINK */
+
+.mobile_link{
+display:flex;
+align-items:center;
+justify-content:space-between;
+width:100%;
+padding:16px 18px;
+color:#fff;
+font-weight:500;
+cursor:pointer;
+text-decoration:none;
+border:none;
+background:none;
+border-bottom:1px solid rgba(255,255,255,0.25);
+transition:background .25s ease;
+}
+
+.mobile_link:hover{
+background:rgba(0,0,0,0.15);
+}
+
+.mobile_link.active{
+background:rgba(0,0,0,0.2);
+}
+
+/* MOBILE ABOUT */
+
+.mobile_about{
+display:flex;
+flex-direction:column;
+}
+
+/* ARROW */
+
+.mobile_about .arrow{
+border-left:6px solid transparent;
+border-right:6px solid transparent;
+border-top:6px solid white;
+transition:transform .3s ease;
+}
+
+.mobile_about .arrow.down{
+transform:rotate(180deg);
+}
+
+/* SUBMENU */
+
+.mobile_about_ul{
+max-height:0;
+opacity:0;
+overflow:hidden;
+transition:max-height .4s ease,opacity .3s ease;
+background:#00994c;
+}
+
+.mobile_about_ul.open{
+max-height:200px;
+opacity:1;
+}
+
+.mobile_sublink{
+display:block;
+padding:14px 28px;
+color:white;
+text-decoration:none;
+border-bottom:1px solid rgba(255,255,255,0.2);
+}
+
+.mobile_sublink:hover{
+background:rgba(0,0,0,0.15);
+}
+
+/* MOBILE ICON */
+
+#threeline{
+display:none;
+cursor:pointer;
+}
+
+/* RESPONSIVE */
+
+/* INTRO SCREEN */
+
+.logo_intro{
+position:fixed;
+inset:0;
+background:#ffffff;
+display:flex;
+align-items:center;
+justify-content:center;
+z-index:99999;
+transition:all 1s ease;
+}
+
+/* LOGO */
+
+.logo_intro img{
+width:220px;
+transition:all 1s ease;
+}
+
+/* MOVE ANIMATION */
+
+.logo_intro.move img{
+position:fixed;
+top:20px;
+left:120px;
+width:140px;
+transform:scale(0.7);
+}
+
+/* OPTIONAL LOADING EFFECT */
+
+.logo_intro::after{
+content:'';
+position:absolute;
+width:260px;
+height:260px;
+border-radius:50%;
+border:5px solid rgba(0,166,81,0.2);
+border-top:5px solid #00A651;
+animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+to{
+transform:rotate(360deg);
+}
+}
+
+@media only screen and (max-width:1100px){
+
+.Full_size{
+display:none;
+}
+
+.mobile-top-fix{
+top:0!important;
+width:100%;
+border-radius:0;
+}
+
+#threeline{
+display:block;
+}
+
+}
+
+@media only screen and (max-width:645px){
+
+.name_logo{
+display:none;
+}
+
+}
+
+/* LETTER ANIMATION */
+
+.letter-container{
+display:inline-block;
+}
+
+.letter{
+display:inline-block;
+opacity:1;
+transform:translateX(0);
+}
+
+.letter.animate{
+opacity:0;
+transform:translateX(-20px);
+animation:slideIn .4s forwards;
+}
+
+@keyframes slideIn{
+to{
+opacity:1;
+transform:translateX(0);
+}
+}

@@ -1,0 +1,10 @@
+.inside_home {
+    font-weight: 800;
+    color: rgb(142, 143, 143);
+
+}
+.home{
+    padding: 10px 10px;
+    border-radius: 10px;
+    color: rgba(0, 0, 0, 0.788);
+}

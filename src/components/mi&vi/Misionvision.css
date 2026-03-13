@@ -1,0 +1,164 @@
+.mission-vision-section {
+  margin: 0 auto;
+  padding: 35px 10%;
+  background: #f7f7f7;
+  scroll-behavior: smooth;
+  text-align: center;
+}
+
+.section-title {
+  font-size: 2.8rem;
+  color: #2E3192;
+  font-weight: 900;
+  letter-spacing: 1px;
+  padding-top: 30px 0px;
+}
+
+/* Flex containers */
+.mission-container,
+.vision-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  margin: 10px 0px;
+  padding: 5px 30px;
+  border-radius: 10px;
+  /* box-shadow: 0 12px 25px rgba(0, 0, 0, 0.07); */
+  opacity: 0;
+  transform: translateY(50px);
+  transition: all 1s ease;
+  gap: 20px;
+  letter-spacing: 1px;
+}
+
+.text-box {
+  text-align: left;
+}
+
+.text-box h3 {
+  color: #2E3192;
+  font-size: 2rem;
+  margin-bottom: 20px;
+  font-weight: 800;
+}
+
+.text-box p {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #4a4a4a;
+  font-weight: 600;
+  text-align: justify;
+}
+
+.animation-box {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.lottie-animation {
+  width: 200px;
+  max-width: 100%;
+}
+
+.lottie-animation_right {
+  width: 400px;
+  max-width: 100%;
+}
+
+.lottie-animation_missing_right {
+  width: 300px;
+  max-width: 100%;
+}
+
+/* Fade-in animation */
+.fade-in-left {
+  opacity: 1;
+  transform: translateX(0);
+  animation: slideInLeft 1s ease forwards;
+}
+
+@keyframes slideInLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Hover effect */
+.mission-container:hover,
+.vision-container:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+
+  .mission-container,
+  .vision-container {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .animation-box {
+    flex-direction: row;
+    margin-top: 20px;
+  }
+
+  .text-box {
+    margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .section-title {
+    font-size: 2.4rem;
+  }
+
+  .text-box h3 {
+    font-size: 1.7rem;
+  }
+
+  .text-box p {
+    font-size: 0.95rem;
+  }
+
+  .lottie-animation_right {
+    width: 160px;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-title {
+    font-size: 1.5rem;
+  }
+
+  .text-box h3 {
+    font-size: 1.4rem;
+  }
+
+  .text-box p {
+    font-size: 0.9rem;
+  }
+
+  .lottie-animation_right {
+    width: 120px;
+  }
+
+  .lottie-animation_right {
+    width: 300px;
+  }
+
+  .mission-vision-section {
+    padding: 35px 5%;
+  }
+}

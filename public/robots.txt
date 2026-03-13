@@ -1,0 +1,25 @@
+# SEO-Friendly Robots.txt for React App
+
+# Apply to all search engines
+User-agent: *
+
+# Allow everything except sensitive or unnecessary files
+Allow: /
+
+# Disallow folders that should not be indexed
+Disallow: /node_modules/
+Disallow: /build/
+Disallow: /src/
+Disallow: /public/
+
+# Optional: delay crawling to reduce server load
+Crawl-delay: 1
+
+# Link to your sitemap
+Sitemap: https://www.innovation-plastic.com/sitemap.xml
+Sitemap: https://www.innovation-plastic.com/sustainability
+Sitemap: https://www.innovation-plastic.com/product
+Sitemap: https://www.innovation-plastic.com/gallery
+Sitemap: https://www.innovation-plastic.com/gallery
+Sitemap: https://www.innovation-plastic.com/contact_us
+Sitemap: https://www.innovation-plastic.com/qc_qa

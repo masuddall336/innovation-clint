@@ -1,0 +1,157 @@
+/* ===============================
+   CONTAINER
+================================ */
+.gallery {
+  position: relative;
+  max-width: 100%;
+  height: 500px;
+  padding: 80px auto;
+  padding-top: 10%;
+  background-color: #228291;
+  overflow: hidden;
+  /* 🔥 FIX */
+}
+
+.track {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+/* ===============================
+   CARD
+================================ */
+.card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform-origin: center center;
+  background: #fff;
+  border-radius: 6px;
+  padding: 12px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  transition: all 0.8s ease;
+}
+
+.card img {
+  width: 100%;
+  height: auto; 
+  object-fit: cover;
+ border-radius: 10px;
+ z-index: 11111;
+}
+
+.card h4 {
+  margin-top: 10px;
+  font-size: 16px;
+  color: #2E3192;
+  font-weight: 900;
+}
+
+/* ===============================
+   DEPTH LEVELS (NO LEAK)
+================================ */
+.level0 {
+  width: 240px;
+  transform: translate(-50%, -50%) scale(1);
+  z-index: 5;
+}
+
+.level1 {
+  width: 200px;
+  transform: translate(-140%, -50%) scale(0.9);
+  opacity: 0.8;
+  z-index: 4;
+}
+
+.level-1 {
+  width: 200px;
+  transform: translate(40%, -50%) scale(0.9);
+  opacity: 0.8;
+  z-index: 4;
+}
+
+.level2 {
+  width: 160px;
+  transform: translate(-230%, -50%) scale(0.75);
+  opacity: 0.45;
+  z-index: 3;
+}
+
+.level-2 {
+  width: 160px;
+  transform: translate(130%, -50%) scale(0.75);
+  opacity: 0.45;
+  z-index: 3;
+}
+
+/* ===============================
+   ARROWS
+================================ */
+.arrow_gallery {
+  position: absolute;
+  top: 63%;
+  transform: translateY(-50%);
+  background: white;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 10;
+  /* box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); */
+}
+.garrery_trafic{
+padding-top: 10%;
+}
+
+.arrow_gallery.left {
+  left: 15px;
+}
+
+.arrow_gallery.right {
+  right: 15px;
+}
+
+/* ===============================
+   RESPONSIVE
+================================ */
+@media (max-width: 768px) {
+
+  .level2,
+  .level-2 {
+    opacity: 0;
+  }
+
+  .level1 {
+    transform: translate(-120%, -50%) scale(0.85);
+  }
+
+  .level-1 {
+    transform: translate(20%, -50%) scale(0.85);
+  }
+
+  .card {
+    position: absolute;
+    top: 60%;
+  }
+
+  .arrow_gallery {
+    position: absolute;
+    top: 60%;
+    background: none;
+    color: #fff;
+    font-weight: 700;
+    font-size: 2rem;
+  }
+  .gallery {
+    padding: 0px 3%;
+  position: relative;
+  padding-top: 35%;
+}
+.garrery_trafic{
+padding-top: 25%;
+}
+}

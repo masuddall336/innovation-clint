@@ -1,0 +1,74 @@
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modal-box {
+  background: #ffffff;
+  width: 90%;
+  max-width: 400px;
+  padding: 25px;
+  border-radius: 8px;
+  position: relative;
+  animation: pop 0.3s ease;
+}
+
+@keyframes pop {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.close-btn {
+  position: absolute;
+  right: -3%;
+  top: -5%;
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #0b6b3b;
+}
+
+.modal-box h3 {
+  color: #0b6b3b;
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+}
+
+.modal-box input,
+.modal-box textarea,
+.modal-box select {
+  width: 100%;
+  padding: 9px;
+  margin-bottom: 12px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 0.85rem;
+}
+
+.modal-box textarea {
+  resize: none;
+  height: 80px;
+}
+
+.submit-btn {
+  width: 100%;
+  background: #0b6b3b;
+  color: #fff;
+  border: none;
+  padding: 10px;
+  border-radius: 25px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}

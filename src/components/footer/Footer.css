@@ -1,0 +1,231 @@
+/* =========================
+   FOOTER CONTAINER
+========================= */
+.footer-container {
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.footer-bg {
+    position: relative;
+    /* background-image: url('../../../public/img/footer.png'); */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* =========================
+   TOP WHITE BLEND EFFECT
+========================= */
+
+
+/* =========================
+   DARK OVERLAY
+========================= */
+.footer-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+
+    /* gradient: lighter near bottom for readability */
+    background: linear-gradient(to bottom,
+            rgba(238, 236, 236, 0.05),
+            #0b6d5470);
+}
+
+/* =========================
+   FOOTER CONTENT
+========================= */
+.footer-content {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+    padding: 10px 40px;
+    color: #fff;
+}
+
+/* =========================
+   COLUMNS
+========================= */
+.footer-column {}
+
+.footer-column h3 {
+    color: #2E3192;
+    margin-bottom: 15px;
+    font-weight: 900;
+    font-size: x-large;
+}
+
+.footer-column p {
+    font-size: 14px;
+    margin-bottom: 8px;
+    line-height: 1.6;
+    color: rgb(113 113 113);
+}
+
+/* =========================
+   LOGO
+========================= */
+.footer-logo {
+    max-width: 280px;
+}
+
+/* =========================
+   MENU
+========================= */
+.footer-menu {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-menu li {
+    margin-bottom: 10px;
+}
+
+.footer-menu-title {
+    cursor: pointer;
+    font-size: 18px;
+    transition: 0.3s;
+    color: rgb(113 113 113);
+}
+
+.footer-menu-title:hover {
+    background: linear-gradient(90deg, #00A651, #2E3192);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.footer-link {
+    text-decoration: none;
+    color: white;
+    font-size: 15px;
+}
+
+.footer-link:hover {
+    color: #fff;
+}
+
+/* =========================
+   COMPANY NAME
+========================= */
+.footer-company-name {
+    font-size: 25px;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: rgb(113 113 113);
+}
+
+/* =========================
+   SOCIAL ICONS
+========================= */
+.social-icons {
+    margin-top: 10px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.social-icons img {
+    width: 28px;
+    background: white;
+    padding: 5px;
+    border-radius: 4px;
+    transition: 0.3s;
+}
+
+.social-icons img:hover {
+    transform: scale(1.1);
+}
+
+/* =========================
+   COPYRIGHT
+========================= */
+.footer-copyright {
+    text-align: center;
+    padding: 12px;
+    background: linear-gradient(to right, #00A651, #2E3192);
+    color: white;
+    font-size: 14px;
+}
+
+.footer-copyright a {
+    color: #fff;
+    margin-left: 5px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+/* =========================
+   FACTORY DECORATION
+========================= */
+.footer-factory-shape,
+.footer-conveyor-line,
+.footer-gear,
+.footer-plastic-bottle {
+    position: absolute;
+    z-index: 1;
+    opacity: 0.15;
+}
+
+/* =========================
+   ANIMATIONS
+========================= */
+@keyframes footer-floatBottle {
+    from {
+        transform: translateY(0);
+    }
+
+    to {
+        transform: translateY(-12px);
+    }
+}
+
+@keyframes footer-rotateGear {
+    from {
+        transform: rotate(0);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column;
+        text-align: center;
+        padding: 50px 20px 80px;
+        gap: 30px;
+    }
+
+    .social-icons {
+        justify-content: center;
+    }
+
+    .footer-logo {
+        margin: auto;
+        width: 100%;
+        height: auto;
+    }
+}
+
+/* =========================
+   DESKTOP HOVER MENU
+========================= */
+@media (min-width: 769px) {
+    .footer-menu>li:hover .footer-submenu {
+        max-height: 500px;
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .footer-menu>li:hover .footer-li-arrow {
+        transform: rotate(405deg);
+    }
+}

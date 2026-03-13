@@ -1,0 +1,275 @@
+/* GENERAL */
+.sustain-container {
+  background: #f6f7fa;
+  color: #1c1c1c;
+  font-family: "Inter", sans-serif;
+  padding-bottom: 60px;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* DARK MODE */
+.sustain-container.dark {
+  background: #0d0d0d;
+  color: #e6e6e6;
+}
+
+.sustain-container.dark .sustain-block {
+  background: rgba(255, 255, 255, 0.05);
+  border-left-color: #66bb6a;
+}
+
+.sustain-container.dark .progress-container {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Dark Mode Button */
+.dark-toggle {
+  position: absolute;
+  right: 0%;
+  top: 100%;
+  background: #2e7d32;
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 30px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  z-index: 999;
+  transition: 0.3s;
+}
+
+.dark-toggle:hover {
+  background: #1b5e20;
+}
+
+/* HERO SECTION */
+.hero-section {
+  width: 100%;
+  height: 100vh;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-overlay {
+  background: rgba(0, 0, 0, 0.45);
+  padding: 40px;
+  border-radius: 12px;
+  text-align: center;
+  color: #fff;
+  max-width: 700px;
+  position: absolute;
+  top: 40%;
+}
+
+.hero-overlay h1 {
+  font-size: 50px;
+  font-weight: 800;
+  margin: 0;
+}
+
+.hero-overlay p {
+  margin-top: 15px;
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+/* CONTENT BLOCKS */
+.sustain-block {
+  background: #fff;
+  padding: 35px;
+  margin: 40px 10%;
+  border-radius: 15px;
+  border-left: 6px solid #2e7d32;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+  transition: 0.3s ease;
+}
+
+.sustain-block h2 {
+  margin-bottom: 10px;
+  font-size: 28px;
+  color: #2e7d32;
+}
+
+.sustain-block p {
+  font-size: 17px;
+  line-height: 1.7;
+}
+
+/* PROGRESS BARS */
+.progress-item {
+  margin: 18px 0;
+}
+
+.progress-item span {
+  font-weight: 600;
+}
+
+.progress-container {
+  width: 100%;
+  height: 10px;
+  background: #e1e1e1;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 6px;
+}
+
+.progress-bar {
+  height: 10px;
+  width: 0;
+  background: #2e7d32;
+  transition: width 1.8s ease;
+}
+
+/* SCROLL REVEAL */
+.reveal {
+  opacity: 0;
+  transform: translateY(60px);
+  transition: all 0.9s ease-out;
+}
+
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* RESPONSIVE DESIGN */
+@media (max-width: 1200px) {
+  .hero-overlay h1 {
+    font-size: 42px;
+  }
+
+  .sustain-block {
+    margin: 35px 8%;
+    padding: 30px;
+  }
+
+  .sustain-block h2 {
+    font-size: 25px;
+  }
+
+  .sustain-block p {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 992px) {
+  .hero-section {
+    height: 50vh;
+  }
+
+  .hero-overlay h1 {
+    font-size: 36px;
+  }
+
+  .hero-overlay p {
+    font-size: 16px;
+  }
+
+  .sustain-block {
+    margin: 30px 6%;
+    padding: 25px;
+  }
+
+  .sustain-block h2 {
+    font-size: 22px;
+  }
+
+  .sustain-block p {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-section {
+    height: 40vh;
+  }
+
+  .hero-overlay {
+    padding: 25px;
+  }
+
+  .hero-overlay h1 {
+    font-size: 28px;
+  }
+
+  .hero-overlay p {
+    font-size: 14px;
+  }
+
+  .sustain-block {
+    margin: 25px 5%;
+    padding: 20px;
+  }
+
+  .sustain-block h2 {
+    font-size: 20px;
+  }
+
+  .sustain-block p {
+    font-size: 14px;
+  }
+
+  .progress-container {
+    height: 8px;
+  }
+
+  .progress-bar {
+    height: 8px;
+  }
+
+  .hero-overlay {
+    top: 50%;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-section {
+    height: 30vh;
+  }
+
+  .hero-overlay {
+    padding: 15px;
+  }
+
+  .hero-overlay h1 {
+    font-size: 22px;
+  }
+
+  .hero-overlay p {
+    font-size: 13px;
+  }
+
+  .sustain-block {
+    margin: 20px 4%;
+    padding: 15px;
+  }
+
+  .sustain-block h2 {
+    font-size: 18px;
+  }
+
+  .sustain-block p {
+    font-size: 13px;
+  }
+
+  .progress-container {
+    height: 6px;
+  }
+
+  .progress-bar {
+    height: 6px;
+  }
+
+  .dark-toggle {
+    display: none;
+  }
+
+  .hero-overlay {
+    top: 50%;
+    background: none;
+  }
+}

@@ -1,0 +1,92 @@
+.products-section {
+    padding: 0% 5%;
+    padding-bottom: 5%;
+    /* background: linear-gradient(135deg, #00A651 0%, #2E3192 100%); */
+}
+
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+    .products-section {
+        /* padding-top: 40%; */
+    }
+}
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (min-width: 600px) {
+    .products-section {
+        /* padding-top: 22%; */
+    }
+}
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
+    .products-section {
+        padding-top: 0%;
+    }
+}
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+    .products-section {
+        padding-top: 0%;
+    }
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+    .products-section {
+        padding-top: 0%;
+    }
+}
+
+
+/* Background + text animation */
+@keyframes bgTextShift {
+
+    0%,
+    100% {
+        background-color: #2E3192;
+        color: #ffffff;
+    }
+
+    50% {
+        background-color: #2E3192;
+        /* color: #2E3192; */
+    }
+}
+
+.animate-bgText {
+    animation: bgTextShift 4s ease-in-out infinite;
+}
+
+
+/* Typing effect */
+.typing-text {
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: 3px solid #00A651;
+    width: 0;
+    animation:
+        typing 5s steps(40, end) infinite,
+        blink 0.8s infinite;
+}
+
+@keyframes typing {
+    0% {
+        width: 0
+    }
+
+    50% {
+        width: 100%
+    }
+
+    100% {
+        width: 0
+    }
+}
+
+@keyframes blink {
+    50% {
+        border-color: transparent
+    }
+}
