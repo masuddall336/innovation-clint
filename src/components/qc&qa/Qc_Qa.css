@@ -29,41 +29,48 @@
   z-index: 1;
 }
 
-/* Video Icon */
+/* Video Icon Container */
 #qcqa-unique-carousel-video {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 2;
+  z-index: 3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
+/* Video Icon */
 .qcqa-unique-video-icon {
+  position: relative;
   width: 80px;
   height: 80px;
   cursor: pointer;
-  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .qcqa-unique-video-icon:hover {
-  transform: scale(1.2);
-  box-shadow: 0 0 20px #00A651;
+  transform: scale(1.1);
 }
 
+/* Pulse Animation */
 @keyframes pulse {
-
-  0%,
-  100% {
+  0% {
     transform: scale(1);
   }
 
   50% {
     transform: scale(1.2);
   }
+
+  100% {
+    transform: scale(1);
+  }
 }
 
 .qcqa-unique-video-icon.pulse {
-  animation: pulse 0.2s infinite;
+  animation: pulse 1.5s infinite;
 }
 
 /* Video Modal */
@@ -147,11 +154,10 @@
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
-/* Main Text & Icon */
+/* Main Text */
 .qcqa-unique-main-text {
   color: #00A651;
   font-size: 2rem;
-  /* font-weight: bold; */
   display: flex;
   align-items: center;
   gap: 10px;
@@ -194,7 +200,7 @@
     font-size: 1.8rem;
   }
 
-  #qcqa-unique-carousel-video .qcqa-unique-video-icon {
+  .qcqa-unique-video-icon {
     width: 70px;
     height: 70px;
   }
@@ -209,7 +215,7 @@
     padding: 20px;
   }
 
-  #qcqa-unique-carousel-video .qcqa-unique-video-icon {
+  .qcqa-unique-video-icon {
     width: 60px;
     height: 60px;
   }
@@ -220,6 +226,16 @@
 }
 
 @media (max-width: 480px) {
+
+  #qcqa-unique-carousel {
+    height: 37vh;
+  }
+
+  .qcqa-unique-slide {
+    height: 37vh;
+    object-position: right;
+  }
+
   .qcqa-unique-main-text {
     font-size: 1.2rem;
   }
@@ -228,7 +244,7 @@
     padding: 15px;
   }
 
-  #qcqa-unique-carousel-video .qcqa-unique-video-icon {
+  .qcqa-unique-video-icon {
     width: 50px;
     height: 50px;
   }
@@ -236,4 +252,8 @@
   .qcqa-icon {
     font-size: 1.5rem;
   }
+
+  #qcqa-unique-content {
+  padding: 20px 20px;
+}
 }

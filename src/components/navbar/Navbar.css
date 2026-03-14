@@ -278,25 +278,6 @@ width:140px;
 transform:scale(0.7);
 }
 
-/* OPTIONAL LOADING EFFECT */
-
-.logo_intro::after{
-content:'';
-position:absolute;
-width:260px;
-height:260px;
-border-radius:50%;
-border:5px solid rgba(0,166,81,0.2);
-border-top:5px solid #00A651;
-animation:spin 1s linear infinite;
-}
-
-@keyframes spin{
-to{
-transform:rotate(360deg);
-}
-}
-
 @media only screen and (max-width:1100px){
 
 .Full_size{

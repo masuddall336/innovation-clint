@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import "./Footer.css";
-import logo from "../../../public/logo/IPCL_logo_with_name.png";
-import Call_icon from "../../../public/icon/phone-call.png";
-import facebook_icon from "../../../public/icon/facebook.png";
-import linkdin_icon from "../../../public/icon/linkDin.png";
+import logo from "/logo/IPCL_logo_with_name.png";
+import Call_icon from "/icon/phone-call.png";
+import facebook_icon from "/icon/facebook.png";
+import linkdin_icon from "/icon/linkDin.png";
 import { Link, NavLink } from "react-router-dom";
 
 const Footer = () => {
-  const [openMenu, setOpenMenu] = useState({});
 
   useEffect(() => {
     const bottles = document.querySelectorAll(".footer-plastic-bottle");
@@ -22,16 +21,9 @@ const Footer = () => {
     });
   }, []);
 
-  const isMobile = () => window.innerWidth <= 768;
 
-  const toggleSubmenu = (key) => {
-    if (isMobile()) {
-      setOpenMenu((prev) => ({
-        ...prev,
-        [key]: !prev[key],
-      }));
-    }
-  };
+
+
 
   return (
     <>
@@ -84,7 +76,7 @@ const Footer = () => {
                 <li>
                   <div
                     className="footer-menu-title"
-                    onClick={() => toggleSubmenu("manufacturing")}
+
                   >
                     Manufacturing
                   </div>
@@ -93,7 +85,7 @@ const Footer = () => {
                 <li>
                   <div
                     className="footer-menu-title"
-                    onClick={() => toggleSubmenu("packaging")}
+
                   >
                     Packaging
                   </div>
@@ -102,7 +94,7 @@ const Footer = () => {
                 <li>
                   <div
                     className="footer-menu-title"
-                    onClick={() => toggleSubmenu("logistics")}
+
                   >
                     Logistics
                   </div>
@@ -118,7 +110,7 @@ const Footer = () => {
                   <NavLink to='/contact-us'>
                     <div
                       className="footer-menu-title"
-                      onClick={() => toggleSubmenu("about")}
+
                     >
                       Contact Us
                     </div>
@@ -128,7 +120,7 @@ const Footer = () => {
                   <NavLink to='products'>
                     <div
                       className="footer-menu-title"
-                      onClick={() => toggleSubmenu("about")}
+
                     >
                       Find Our Products
                     </div>
@@ -191,9 +183,9 @@ const Footer = () => {
         </div>
         <div>
           <ul className="flex gap-3">
-            <li><NavLink to='Privacy-Policy'>Privacy Policy</NavLink></li>
+            <li><NavLink to='/Privacy-Policy'>Privacy Policy</NavLink></li>
             <li><NavLink to=''>Terms of Services</NavLink></li>
-            <li><NavLink to='cookie-policy'>Cookie Policy</NavLink></li>
+            <li><NavLink to='/cookie-policy'>Cookie Policy</NavLink></li>
           </ul>
         </div>
         <div>

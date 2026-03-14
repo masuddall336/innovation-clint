@@ -36,7 +36,7 @@ const Qc_Qa = () => {
     const handleScroll = () => {
       elements.forEach((el, index) => {
         const rect = el.getBoundingClientRect();
-        if (rect.top < window.innerHeight - 10) {
+        if (rect.top < window.innerHeight - 0) {
           setTimeout(() => {
             el.classList.add("qcqa-unique-text-visible");
           }, index * 100); // staggered animation
