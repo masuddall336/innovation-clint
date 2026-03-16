@@ -53,8 +53,8 @@ export default function DisplayProducts({ product, handleDelete, index }) {
           },
         }}
       >
-        <div className="card-image w-full h-60 sm:h-64 md:h-72 lg:h-60 cursor-auto">
-          <div className="relative w-full h-full overflow-hidden rounded-t-xs">
+        <div className="card-image h-60 sm:h-64 md:h-72 lg:h-60 cursor-auto">
+          <div className="relative h-full overflow-hidden rounded-t-xs">
             <img
               src={img_url}
               alt={name}

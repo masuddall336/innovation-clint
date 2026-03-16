@@ -3,7 +3,7 @@ import "./Products.css";
 import DisplayProducts from "./DisplayProducts";
 import { NavLink, useLoaderData } from "react-router-dom";
 import { AuthContext } from "../../firebase/AuthContext";
-import banner from "../../../public/img/product_section_banner.png";
+import banner from "/img/product_section_banner_Compressed.png";
 import ScrollTop from "../ScrollTop";
 import { FaArrowDown, FaBoxOpen } from "react-icons/fa";
 import Swal from "sweetalert2";
@@ -74,7 +74,7 @@ const Products = () => {
     }
 
     return (
-        <div className="w-full overflow-hidden">
+        <div className=" overflow-hidden">
             <ScrollTop />
 
             {/* Banner */}
@@ -87,8 +87,8 @@ const Products = () => {
             </div>
 
             {/* Heading */}
-            <div className="relative flex flex-col md:flex-row w-[92%] mx-auto items-center justify-center md:justify-between gap-4 py-4 px-5">
-                <h2 className="flex items-center gap-3 rounded py-2 px-4 font-bold text-xs md:text-2xl text-white bg-[#2E3192] shadow-lg">
+            <div className="relative flex flex-col md:flex-row  mx-auto items-center justify-center md:justify-between gap-4 py-4 w-[84%]">
+                <h2 className="flex items-center gap-3 rounded py-2 px-2 md:px-4 font-bold text-xs md:text-2xl text-white bg-[#2E3192] shadow-lg">
                     <FaArrowDown className="text-xl md:text-2xl animate-bounce" />
                     <FaBoxOpen className="text-2xl md:text-3xl animate-pulse" />
                     <span className="typing-text">Explore Our Plastic Packaging Solutions</span>
@@ -96,7 +96,7 @@ const Products = () => {
             </div>
 
             {/* Products Grid */}
-            <section className="products-section grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 p-5">
+            <section className="products-section grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 ">
                 {filteredProducts.map((product, index) => (
                     <DisplayProducts
                         key={product._id}

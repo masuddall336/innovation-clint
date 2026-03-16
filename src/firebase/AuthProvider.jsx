@@ -22,9 +22,6 @@ const AuthProvider = ({ children }) => {
     }
     const singOutUser = () => {
         return signOut(auth)
-            .then(ras => {
-                console.log(ras);
-            })
     }
     const userInfo = {
         user,

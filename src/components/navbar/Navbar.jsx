@@ -15,7 +15,17 @@ import { AuthContext } from '../../firebase/AuthContext'
 import Contact_map from '../contatUsMap/Contat_map'
 
 export default function Navbar() {
-    const { user, signOutUser } = useContext(AuthContext)
+    const { user, singOutUser } = useContext(AuthContext);
+    const handleSingOut = () => {
+        singOutUser()
+            .then(ras => {
+                console.log("sign out user",ras);
+            })
+            .catch(error => {
+                console.log(error);
+
+            })
+    }
 
     const [aboutOpen, setAboutOpen] = useState(false)
     const [scrolled, setScrolled] = useState(false)
@@ -85,7 +95,7 @@ export default function Navbar() {
 
             <nav
                 className={`fixed left-1/2 transform -translate-x-1/2 z-20 flex justify-between items-center 
-                    transition-all duration-500 mobile-top-fix
+                    transition-all duration-500 mobile-top-fix 
                     ${scrolled
                         ? 'top-0 w-full rounded-none bg-white shadow-lg'
                         : 'top-11 w-[90%] rounded-xl bg-white'
@@ -215,7 +225,7 @@ export default function Navbar() {
                     {user && (
                         <button
                             className='bg-[#fff] py-1 hover:scale-95 cursor-pointer px-2 rounded font-bold text-[#805555]'
-                            onClick={signOutUser}
+                            onClick={handleSingOut}
                         >
                             Sign Out
                         </button>

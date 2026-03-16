@@ -1,7 +1,7 @@
 import React from 'react'
 import { useLoaderData } from 'react-router-dom'
 import Details from './Details';
-import banner from '../../../public/img/Product_Details_section_banner.png'
+import banner from '/img/Product_Details_section_banner.png'
 
 const LoadData = () => {
     const product = useLoaderData();
