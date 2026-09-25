@@ -19,10 +19,12 @@ import LoadData from './components/products/LoadData.jsx'
 import UpdateProductForm from './add-products-form/UpdateProductForm.jsx'
 import PrivacyPolicy from './components/PrivacyPolicy.jsx'
 import CookiePolicy from './components/CookiePolicy.jsx'
+import Video from './components/video/Video.jsx'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-
+const queryClient = new QueryClient()
 
 let router = createBrowserRouter([
   {
@@ -47,15 +49,6 @@ let router = createBrowserRouter([
       },
       {
         path: "/products",
-        loader: async () => {
-          const res = await fetch(`${API_URL}/products`);
-
-          if (!res.ok) {
-            throw new Error(`Failed to fetch: ${res.status}`);
-          }
-
-          return res.json();
-        },
         Component: Products,
       },
       {
@@ -102,11 +95,14 @@ let router = createBrowserRouter([
   }
 ])
 createRoot(document.getElementById('root')).render(
-  <HelmetProvider>
-    <AuthProvider>
-      <RouterProvider router={router}>
-      </RouterProvider>
-    </AuthProvider>
-  </HelmetProvider>
+  <QueryClientProvider client={queryClient}>
+    <HelmetProvider>
+      <Video />
+      <AuthProvider>
+        <RouterProvider router={router}>
+        </RouterProvider>
+      </AuthProvider>
+    </HelmetProvider>
+  </QueryClientProvider>
 )
 

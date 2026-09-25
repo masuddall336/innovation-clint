@@ -189,7 +189,7 @@ const Footer = () => {
           </ul>
         </div>
         <div>
-          <p>Design & Develop by Abdullah Al - Masud</p>
+          <p>Design & Developed by Abdullah Al - Masud</p>
         </div>
       </div>
     </>
