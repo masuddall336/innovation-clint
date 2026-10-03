@@ -1,21 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Loading from "../loading/Loading";
 
 const Details = ({ product }) => {
   const images = [product?.img_url, ...(product?.thumbnail_url || [])];
 
   const [activeIndex, setActiveIndex] = useState(0);
-  const [imgLoading, setImgLoading] = useState(true);
-  const [pageLoading, setPageLoading] = useState(true);
   const [lightbox, setLightbox] = useState(false);
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
 
     if (product) {
       setActiveIndex(0);
-      setPageLoading(true);
-      setTimeout(() => setPageLoading(false), 400);
     }
   }, [product]);
 
@@ -33,12 +30,10 @@ const Details = ({ product }) => {
 
   const changeImage = (index) => {
     if (index === activeIndex) return;
-    setImgLoading(true);
     const preload = new Image();
     preload.src = images[index];
     preload.onload = () => {
       setActiveIndex(index);
-      setImgLoading(false);
     };
   };
 
@@ -52,7 +47,7 @@ const Details = ({ product }) => {
     changeImage(newIndex);
   };
 
-  if (!product) return <div className="p-4 text-center">Loading...</div>;
+  if (!product) return <Loading />;
 
   // Motion variants for text animation
   const containerVariants = {
@@ -70,12 +65,7 @@ const Details = ({ product }) => {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: pageLoading ? 0 : 1, y: pageLoading ? 10 : 0 }}
-      transition={{ duration: 0.5 }}
-      className="max-w-[92%] mx-auto px-4 py-4"
-    >
+    <div className="max-w-[92%] mx-auto px-4 py-4">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
         {/* LEFT SIDE */}
@@ -83,21 +73,13 @@ const Details = ({ product }) => {
 
           {/* MAIN IMAGE */}
           <div className="relative rounded-2xl overflow-hidden shadow-lg group bg-gray-100 w-full">
-            <AnimatePresence mode="wait">
-              <motion.img
-                key={images[activeIndex]}
-                src={images[activeIndex]}
-                alt="product"
-                initial={{ opacity: 0, scale: 0.96 }}
-                animate={{ opacity: imgLoading ? 0 : 1, scale: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.35 }}
-                onLoad={() => setImgLoading(false)}
-                onClick={() => setLightbox(true)}
-                className="w-full max-h-[300px] md:max-h-[350px] object-contain cursor-zoom-in transition-transform duration-300 group-hover:scale-105"
-              />
-            </AnimatePresence>
-            {imgLoading && <div className="absolute inset-0 animate-pulse bg-gray-200" />}
+            <img
+              key={images[activeIndex]}
+              src={images[activeIndex]}
+              alt="product"
+              onClick={() => setLightbox(true)}
+              className="w-full max-h-[300px] md:max-h-[350px] object-contain cursor-zoom-in transition-transform duration-300 group-hover:scale-105"
+            />
           </div>
 
           {/* THUMBNAILS */}
@@ -118,7 +100,7 @@ const Details = ({ product }) => {
         <motion.div
           variants={containerVariants}
           initial="hidden"
-          animate={pageLoading ? "hidden" : "visible"}
+          animate="visible"
           className="space-y-3"
         >
           <motion.h2
@@ -184,7 +166,7 @@ const Details = ({ product }) => {
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.div>
+    </div>
   );
 };
 

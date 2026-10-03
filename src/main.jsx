@@ -13,6 +13,7 @@ import Gallery from './components/gallery/Gallery.jsx'
 import { HelmetProvider } from 'react-helmet-async'
 import Sitemap from './components/sitemap/Sitemap.jsx'
 import Login from './login/Login.jsx'
+import Register from './login/Register.jsx'
 import AuthProvider from './firebase/AuthProvider.jsx'
 import AddProducts from './add-products-form/AddProducts.jsx'
 import LoadData from './components/products/LoadData.jsx'
@@ -62,6 +63,10 @@ let router = createBrowserRouter([
       {
         path: '/login',
         Component: Login
+      },
+      {
+        path: '/register',
+        Component: Register
       },
       {
         path: '/products/add-product',

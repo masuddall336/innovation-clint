@@ -4,6 +4,25 @@ body {
    font-family: "Ubuntu", sans-serif;
 }
 
-* {
-  scroll-behavior: smooth;
+html {
+  scrollbar-color: #2E3192 #07111f;
+  scrollbar-width: thin;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #07111f;
+}
+
+::-webkit-scrollbar-thumb {
+  border: 2px solid #07111f;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #00aeef, #1767a6);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #32c5ff;
 }

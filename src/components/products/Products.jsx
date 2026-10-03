@@ -3,573 +3,720 @@ import React, { useContext, useMemo, useState } from "react";
 import "./Products.css";
 import DisplayProducts from "./DisplayProducts";
 import { NavLink } from "react-router-dom";
-import { AuthContext } from "../../firebase/AuthContext";
 import banner from "/img/product_section_banner_Compressed.png";
 import ScrollTop from "../ScrollTop";
-import { FaArrowDown, FaBoxOpen, FaRotate } from "react-icons/fa6";
+
+import {
+  FaArrowDown,
+  FaBoxOpen,
+  FaRotate,
+  FaMagnifyingGlass,
+  FaXmark,
+} from "react-icons/fa6";
+
 import Swal from "sweetalert2";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Loading from "../loading/Loading";
+import { AuthContext } from "../../firebase/AuthContext";
 
 const Products = () => {
-    const { user } = useContext(AuthContext);
-    const queryClient = useQueryClient();
+  const { user } = useContext(AuthContext);
+  const queryClient = useQueryClient();
 
-    const API_URL = import.meta.env.VITE_API_URL;
+  const [searchInput, setSearchInput] = useState("");
+  const [activeSearch, setActiveSearch] = useState("");
 
-    const [activeCategory, setActiveCategory] = useState("All");
-    const [bannerLoaded, setBannerLoaded] = useState(false);
+  const API_URL = import.meta.env.VITE_API_URL;
 
-    // =========================================================
-    // FETCH PRODUCTS
-    // Products are loaded directly inside Products.jsx
-    // No React Router loader is required.
-    // =========================================================
+  /* =====================================================
+     FETCH PRODUCTS
+  ====================================================== */
+  const {
+    data: products = [],
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery({
+    queryKey: ["products"],
 
-    const {
-        data: allProducts = [],
-        isLoading,
-        isFetching,
-        isError,
-        error,
-        refetch,
-    } = useQuery({
-        queryKey: ["products"],
+    queryFn: async () => {
+      if (!API_URL) {
+        throw new Error("VITE_API_URL is not configured");
+      }
 
-        queryFn: async () => {
-            const response = await fetch(`${API_URL}/products`);
+      const response = await fetch(`${API_URL}/products`);
 
-            if (!response.ok) {
-                throw new Error(
-                    `Failed to load products: ${response.status}`
-                );
-            }
+      if (!response.ok) {
+        throw new Error("Failed to fetch products");
+      }
 
-            const data = await response.json();
+      const data = await response.json();
 
-            return Array.isArray(data) ? data : [];
-        },
+      if (Array.isArray(data)) {
+        return data;
+      }
 
-        // Keep cached products fresh for 5 minutes.
-        staleTime: 1000 * 60 * 5,
+      if (Array.isArray(data?.products)) {
+        return data.products;
+      }
 
-        // Keep unused product cache for 30 minutes.
-        gcTime: 1000 * 60 * 30,
+      return [];
+    },
 
-        // Retry failed requests twice.
-        retry: 2,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
+    retry: 2,
+    refetchOnWindowFocus: false,
+  });
 
-        // Prevent unnecessary refetch every time the user
-        // switches browser tabs.
-        refetchOnWindowFocus: false,
+  /* =====================================================
+     SEARCH
+  ====================================================== */
+  const filteredProducts = useMemo(() => {
+    const search = activeSearch.trim().toLowerCase();
+
+    if (!search) {
+      return products;
+    }
+
+    return products.filter((product) => {
+      const title = product?.title || "";
+      const name = product?.name || "";
+      const category = product?.category || "";
+
+      const subcategory =
+        product?.subcategory ||
+        product?.subCategory ||
+        "";
+
+      const description = product?.description || "";
+
+      const searchableText = `
+        ${title}
+        ${name}
+        ${category}
+        ${subcategory}
+        ${description}
+      `.toLowerCase();
+
+      return searchableText.includes(search);
+    });
+  }, [products, activeSearch]);
+
+  /* =====================================================
+     SEARCH SUBMIT
+  ====================================================== */
+  const handleSearch = (e) => {
+    e.preventDefault();
+
+    setActiveSearch(searchInput.trim());
+  };
+
+  /* =====================================================
+     CLEAR SEARCH
+  ====================================================== */
+  const handleClearSearch = () => {
+    setSearchInput("");
+    setActiveSearch("");
+  };
+
+  /* =====================================================
+     DELETE PRODUCT
+  ====================================================== */
+  const handleDeleteProduct = async (product) => {
+    if (!product?._id) return;
+
+    const result = await Swal.fire({
+      title: "Delete Product?",
+      text: "This product will be permanently deleted.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, Delete",
+      cancelButtonText: "Cancel",
+      confirmButtonColor: "#2E3192",
     });
 
-    // =========================================================
-    // FILTER PRODUCTS BY CATEGORY
-    // =========================================================
+    if (!result.isConfirmed) return;
 
-    const filteredProducts = useMemo(() => {
-        if (activeCategory === "All") {
-            return allProducts;
+    try {
+      if (!API_URL) {
+        throw new Error("VITE_API_URL is not configured");
+      }
+
+      const response = await fetch(
+        `${API_URL}/products/${product._id}`,
+        {
+          method: "DELETE",
         }
+      );
 
-        return allProducts.filter(
-            (product) => product.category === activeCategory
-        );
-    }, [allProducts, activeCategory]);
+      if (!response.ok) {
+        throw new Error("Failed to delete product");
+      }
 
-    // =========================================================
-    // CATEGORIES
-    // =========================================================
+      queryClient.setQueryData(
+        ["products"],
+        (oldProducts = []) =>
+          oldProducts.filter(
+            (item) => item?._id !== product._id
+          )
+      );
 
-    const categories = useMemo(() => {
-        return [
-            ...new Set(
-                allProducts
-                    .map((product) => product.category)
-                    .filter(Boolean)
-            ),
-        ];
-    }, [allProducts]);
+      await queryClient.invalidateQueries({
+        queryKey: ["products"],
+      });
 
-    // =========================================================
-    // DELETE PRODUCT
-    // =========================================================
+      Swal.fire({
+        icon: "success",
+        title: "Deleted",
+        text: "Product deleted successfully.",
+        timer: 1600,
+        showConfirmButton: false,
+      });
+    } catch (error) {
+      console.error("Delete product error:", error);
 
-    const handleDelete = async (id, title) => {
-        const result = await Swal.fire({
-            title: `Delete "${title}"?`,
-            text: "You won't be able to revert this!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, delete it!",
-        });
-
-        if (!result.isConfirmed) {
-            return;
-        }
-
-        try {
-            const response = await fetch(`${API_URL}/products/${id}`, {
-                method: "DELETE",
-            });
-
-            const data = await response.json();
-
-            if (data.deletedCount > 0) {
-                await Swal.fire(
-                    "Deleted!",
-                    `"${title}" has been deleted.`,
-                    "success"
-                );
-
-                // Immediately remove the product from the cache.
-                queryClient.setQueryData(
-                    ["products"],
-                    (oldProducts = []) =>
-                        oldProducts.filter(
-                            (product) => product._id !== id
-                        )
-                );
-
-                // Sync the cache with the backend.
-                queryClient.invalidateQueries({
-                    queryKey: ["products"],
-                });
-            } else {
-                Swal.fire(
-                    "Error!",
-                    "Failed to delete the product.",
-                    "error"
-                );
-            }
-        } catch (deleteError) {
-            console.error("Delete product error:", deleteError);
-
-            Swal.fire(
-                "Error!",
-                "Something went wrong while deleting the product.",
-                "error"
-            );
-        }
-    };
-
-    // =========================================================
-    // INITIAL API LOADING
-    // =========================================================
-
-    if (isLoading) {
-        return <Loading />;
+      Swal.fire({
+        icon: "error",
+        title: "Delete Failed",
+        text:
+          error?.message ||
+          "Unable to delete this product.",
+      });
     }
+  };
 
-    // =========================================================
-    // API ERROR
-    // =========================================================
+  /* =====================================================
+     LOADING
+  ====================================================== */
+  if (isLoading) {
+    return <Loading />;
+  }
 
-    if (isError) {
-        return (
-            <div className="flex min-h-[70vh] items-center justify-center bg-white px-4">
-                <div className="w-full max-w-md rounded-2xl border border-red-100 bg-white p-8 text-center shadow-xl">
-                    <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-red-50">
-                        <FaRotate className="text-2xl text-red-500" />
-                    </div>
-
-                    <h2 className="text-xl font-bold text-gray-800">
-                        Products Could Not Be Loaded
-                    </h2>
-
-                    <p className="mt-2 text-sm leading-6 text-gray-500">
-                        {error?.message ||
-                            "Something went wrong while loading the products."}
-                    </p>
-
-                    <button
-                        type="button"
-                        onClick={() => refetch()}
-                        className="
-                            mt-6
-                            inline-flex
-                            items-center
-                            gap-2
-                            rounded-lg
-                            bg-gradient-to-r
-                            from-[#2E3192]
-                            to-[#4348d1]
-                            px-6
-                            py-3
-                            text-sm
-                            font-semibold
-                            text-white
-                            shadow-md
-                            transition-all
-                            duration-300
-                            hover:-translate-y-0.5
-                            hover:shadow-lg
-                        "
-                    >
-                        <FaRotate />
-                        Try Again
-                    </button>
-                </div>
-            </div>
-        );
-    }
-
-    // =========================================================
-    // PAGE
-    // =========================================================
-
+  /* =====================================================
+     ERROR
+  ====================================================== */
+  if (isError) {
     return (
-        <div className="overflow-hidden bg-white">
-            <ScrollTop />
+      <>
+        <ScrollTop />
 
-            {/* =====================================================
-                BANNER
-            ====================================================== */}
-
+        <div className="flex min-h-[60vh] items-center justify-center px-5">
+          <div
+            className="
+              w-full
+              max-w-md
+              rounded-2xl
+              border
+              border-slate-200
+              bg-white
+              p-8
+              text-center
+              shadow-lg
+            "
+          >
             <div
-                className="
-                    relative
-                    h-[25vh]
-                    w-full
-                    overflow-hidden
-                    bg-gradient-to-br
-                    from-[#eef7fb]
-                    via-white
-                    to-[#f7eff8]
-                    md:h-[80vh]
-                    lg:h-[65vh]
-                "
+              className="
+                mx-auto
+                mb-5
+                flex
+                h-14
+                w-14
+                items-center
+                justify-center
+                rounded-full
+                bg-slate-100
+              "
             >
-                {/* Banner Skeleton */}
-
-                {!bannerLoaded && (
-                    <div
-                        className="
-                            absolute
-                            inset-0
-                            overflow-hidden
-                            bg-gradient-to-br
-                            from-[#e8f5fa]
-                            via-[#f4f7fb]
-                            to-[#f5eaf6]
-                        "
-                    >
-                        <div
-                            className="
-                                absolute
-                                inset-0
-                                animate-pulse
-                                bg-gradient-to-r
-                                from-transparent
-                                via-white/70
-                                to-transparent
-                            "
-                        />
-
-                        <div
-                            className="
-                                absolute
-                                left-1/2
-                                top-1/2
-                                h-12
-                                w-52
-                                -translate-x-1/2
-                                -translate-y-1/2
-                                rounded-xl
-                                bg-white/60
-                                shadow-sm
-                            "
-                        />
-                    </div>
-                )}
-
-                <img
-                    src={banner}
-                    alt="Products banner"
-                    loading="eager"
-                    fetchPriority="high"
-                    decoding="async"
-                    onLoad={() => setBannerLoaded(true)}
-                    className={`
-                        h-full
-                        w-full
-                        object-cover
-                        object-right
-                        transition-all
-                        duration-700
-                        ${
-                            bannerLoaded
-                                ? "scale-100 opacity-100"
-                                : "scale-[1.02] opacity-0"
-                        }
-                    `}
-                />
+              <FaRotate className="text-xl text-[#2E3192]" />
             </div>
 
-            {/* =====================================================
-                HEADING
-            ====================================================== */}
+            <h2 className="text-xl font-bold text-slate-800">
+              Unable to Load Products
+            </h2>
 
+            <p className="mt-2 text-sm leading-6 text-slate-500">
+              Something went wrong while loading the
+              products. Please try again.
+            </p>
+
+            <button
+              type="button"
+              onClick={() => refetch()}
+              className="
+                mt-6
+                inline-flex
+                items-center
+                gap-2
+                rounded-xl
+                bg-[#2E3192]
+                px-5
+                py-3
+                text-sm
+                font-semibold
+                text-white
+                shadow-md
+                transition
+                hover:bg-[#1E216F]
+              "
+            >
+              <FaRotate />
+              Try Again
+            </button>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  return (
+    <div className="min-h-screen min-w-0 overflow-x-clip bg-white">
+      <ScrollTop />
+
+      {/* =====================================================
+          OPTIMIZED PRODUCT BANNER
+      ====================================================== */}
+      <section
+        className="
+          relative
+          w-full
+          overflow-hidden
+          bg-slate-100
+        "
+      >
+        <img
+          src={banner}
+          alt="Our Products"
+          width="1920"
+          height="700"
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
+          className="
+            block
+            h-[220px]
+            w-full
+            object-cover
+            object-right
+
+            sm:h-[280px]
+
+            md:h-[400px]
+
+            lg:h-[500px]
+
+            xl:h-[520px]
+          "
+        />
+      </section>
+
+      {/* =====================================================
+          MAIN CONTENT
+      ====================================================== */}
+      <main className="w-full min-w-0 overflow-x-clip">
+
+        {/* ===================================================
+            HEADING + SEARCH
+        ==================================================== */}
+        <div
+          className="
+            mx-auto
+            flex
+            w-full
+            max-w-[1440px]
+            flex-col
+            gap-3
+            px-3
+            py-4
+
+            sm:px-4
+
+            lg:flex-row
+            lg:items-center
+            lg:justify-between
+            lg:px-6
+          "
+        >
+          {/* LEFT CONTENT */}
+          <div className="flex min-w-0 items-center gap-2.5">
             <div
+              className="
+                flex
+                h-9
+                w-9
+                shrink-0
+                items-center
+                justify-center
+                rounded-xl
+                bg-[#2E3192]/10
+              "
+            >
+              <FaBoxOpen className="text-base text-[#2E3192]" />
+            </div>
+
+            <div>
+              <h1
                 className="
-                    relative
-                    mx-auto
+                  text-lg
+                  font-bold
+                  text-slate-800
+
+                  sm:text-xl
+                "
+              >
+                Our Products
+              </h1>
+
+              <p
+                className="
+                  mt-0.5
+                  text-xs
+                  text-slate-500
+
+                  sm:text-sm
+                "
+              >
+                Explore our complete product collection
+              </p>
+            </div>
+          </div>
+
+          {/* SEARCH */}
+          <form
+            onSubmit={handleSearch}
+            className="
+              flex
+              w-full
+              max-w-[400px]
+              items-center
+              gap-1.5
+
+              lg:w-[34%]
+            "
+          >
+            <div
+              className="
+                relative
+                flex
+                h-10
+                w-full
+                items-center
+                overflow-hidden
+                rounded-xl
+                border
+                border-slate-200
+                bg-white
+                shadow-sm
+                transition
+
+                focus-within:border-[#2E3192]
+
+                focus-within:shadow-[0_8px_25px_rgba(46,49,146,0.10)]
+              "
+            >
+              <FaMagnifyingGlass
+                className="
+                  ml-3
+                  shrink-0
+                  text-sm
+                  text-slate-400
+                "
+              />
+
+              <input
+                type="text"
+                value={searchInput}
+                onChange={(e) =>
+                  setSearchInput(e.target.value)
+                }
+                placeholder="Search products..."
+                className="
+                  h-full
+                  min-w-0
+                  flex-1
+                  bg-transparent
+                  px-2.5
+                  text-sm
+                  text-slate-700
+                  outline-none
+
+                  placeholder:text-slate-400
+                "
+              />
+
+              {searchInput && (
+                <button
+                  type="button"
+                  onClick={handleClearSearch}
+                  className="
+                    mr-2
                     flex
-                    w-[84%]
-                    flex-col
+                    h-7
+                    w-7
+                    shrink-0
                     items-center
                     justify-center
-                    gap-4
-                    py-4
-                    md:flex-row
-                    md:justify-between
-                "
-            >
-                <h2
-                    className="
-                        typing-heading
-                        flex
-                        items-center
-                        gap-3
-                        rounded-lg
-                        bg-[#2E3192]
-                        px-3
-                        py-2
-                        text-xs
-                        font-bold
-                        text-white
-                        shadow-lg
-                        md:px-4
-                        md:text-2xl
-                    "
+                    rounded-lg
+                    text-slate-400
+                    transition
+
+                    hover:bg-slate-100
+                    hover:text-slate-700
+                  "
+                  aria-label="Clear search"
                 >
-                    <FaArrowDown className="animate-bounce text-xl md:text-2xl" />
-
-                    <FaBoxOpen className="animate-pulse text-2xl md:text-3xl" />
-
-                    <span className="typing-text">
-                        Explore Our Plastic Packaging Solutions
-                    </span>
-                </h2>
-            </div>
-
-            {/* =====================================================
-                CATEGORIES
-            ====================================================== */}
-
-            <div
-                className="
-                    mx-auto
-                    mb-5
-                    flex
-                    w-[84%]
-                    flex-wrap
-                    justify-center
-                    gap-2
-                "
-            >
-                <button
-                    type="button"
-                    onClick={() => setActiveCategory("All")}
-                    className={`
-                        rounded-full
-                        px-5
-                        py-2
-                        text-sm
-                        font-semibold
-                        transition-all
-                        duration-300
-                        ${
-                            activeCategory === "All"
-                                ? "bg-[#2E3192] text-white shadow-md"
-                                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                        }
-                    `}
-                >
-                    All Products
+                  <FaXmark />
                 </button>
-
-                {categories.map((category) => (
-                    <button
-                        key={category}
-                        type="button"
-                        onClick={() => setActiveCategory(category)}
-                        className={`
-                            rounded-full
-                            px-5
-                            py-2
-                            text-sm
-                            font-semibold
-                            transition-all
-                            duration-300
-                            ${
-                                activeCategory === category
-                                    ? "bg-[#2E3192] text-white shadow-md"
-                                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                            }
-                        `}
-                    >
-                        {category}
-                    </button>
-                ))}
+              )}
             </div>
 
-            {/* =====================================================
-                BACKGROUND REFRESH
-            ====================================================== */}
+            <button
+              type="submit"
+              className="
+                flex
+                h-10
+                shrink-0
+                items-center
+                gap-2
+                rounded-xl
+                bg-[#2E3192]
+                px-3
+                text-sm
+                font-semibold
+                text-white
+                shadow-sm
+                transition
 
-            {isFetching && !isLoading && (
-                <div
-                    className="
-                        mx-auto
-                        mb-3
-                        flex
-                        items-center
-                        justify-center
-                        gap-2
-                        text-xs
-                        text-gray-400
-                    "
-                >
-                    <span
-                        className="
-                            h-2
-                            w-2
-                            animate-pulse
-                            rounded-full
-                            bg-[#00AEEF]
-                        "
-                    />
+                hover:bg-[#1E216F]
 
-                    Updating products...
-                </div>
-            )}
-
-            {/* =====================================================
-                PRODUCTS
-            ====================================================== */}
-
-            <section
-                className="
-                    products-section
-                    grid
-                    grid-cols-1
-                    gap-3
-                    sm:grid-cols-2
-                    md:grid-cols-3
-                    lg:grid-cols-4
-                "
+                active:scale-[0.98]
+              "
             >
-                {filteredProducts.length > 0 ? (
-                    filteredProducts.map((product, index) => (
-                        <DisplayProducts
-                            key={product._id}
-                            index={index}
-                            product={product}
-                            handleDelete={() =>
-                                handleDelete(
-                                    product._id,
-                                    product.title || product.name
-                                )
-                            }
-                        />
-                    ))
-                ) : (
-                    <div
-                        className="
-                            col-span-full
-                            flex
-                            min-h-[300px]
-                            items-center
-                            justify-center
-                        "
-                    >
-                        <div className="text-center">
-                            <div
-                                className="
-                                    mx-auto
-                                    mb-4
-                                    flex
-                                    h-20
-                                    w-20
-                                    items-center
-                                    justify-center
-                                    rounded-full
-                                    bg-gray-100
-                                "
-                            >
-                                <FaBoxOpen className="text-3xl text-gray-400" />
-                            </div>
+              <FaMagnifyingGlass />
 
-                            <h3 className="text-lg font-bold text-gray-700">
-                                No Products Found
-                            </h3>
-
-                            <p className="mt-1 text-sm text-gray-400">
-                                There are no products available in this
-                                category.
-                            </p>
-
-                            {activeCategory !== "All" && (
-                                <button
-                                    type="button"
-                                    onClick={() =>
-                                        setActiveCategory("All")
-                                    }
-                                    className="
-                                        mt-4
-                                        rounded-lg
-                                        bg-[#2E3192]
-                                        px-5
-                                        py-2
-                                        text-sm
-                                        font-semibold
-                                        text-white
-                                        transition
-                                        hover:bg-[#4348d1]
-                                    "
-                                >
-                                    View All Products
-                                </button>
-                            )}
-                        </div>
-                    </div>
-                )}
-            </section>
-
-            {/* =====================================================
-                ADD PRODUCT
-            ====================================================== */}
-
-            {user && (
-                <div className="my-8 flex justify-center">
-                    <NavLink
-                        to="/products/add-product"
-                        className="
-                            rounded-lg
-                            bg-gradient-to-r
-                            from-[#2E3192]
-                            to-[#4348d1]
-                            px-6
-                            py-3
-                            font-semibold
-                            text-white
-                            shadow-md
-                            transition-all
-                            duration-300
-                            hover:-translate-y-0.5
-                            hover:shadow-xl
-                        "
-                    >
-                        + Add New Product
-                    </NavLink>
-                </div>
-            )}
+              <span className="hidden md:inline">
+                Search
+              </span>
+            </button>
+          </form>
         </div>
-    );
+
+        {/* ===================================================
+            SEARCH RESULT INFO
+        ==================================================== */}
+        {activeSearch && (
+          <div
+            className="
+              mx-auto
+              w-full
+              max-w-[1440px]
+              px-3
+              pb-2
+
+              sm:px-4
+
+              lg:px-6
+            "
+          >
+            <div
+              className="
+                flex
+                items-center
+                justify-between
+                rounded-xl
+                border
+                border-slate-100
+                bg-slate-50
+                px-4
+                py-3
+              "
+            >
+              <p className="text-sm text-slate-600">
+                Search results for{" "}
+                <span className="font-semibold text-[#2E3192]">
+                  "{activeSearch}"
+                </span>
+              </p>
+
+              <button
+                type="button"
+                onClick={handleClearSearch}
+                className="
+                  text-xs
+                  font-semibold
+                  text-[#2E3192]
+                  transition
+
+                  hover:underline
+                "
+              >
+                Clear
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* ===================================================
+            PRODUCTS GRID
+        ==================================================== */}
+        <section
+          className="
+            products-section
+            mx-auto
+            grid
+            w-full
+            max-w-[1440px]
+            min-w-0
+            grid-cols-1
+            gap-2
+            overflow-x-clip
+            px-3
+
+            sm:grid-cols-2
+            sm:px-4
+
+            md:grid-cols-3
+
+            lg:grid-cols-4
+            lg:px-6
+          "
+        >
+          {filteredProducts.length > 0 ? (
+            filteredProducts.map((product) => (
+              <DisplayProducts
+                key={
+                  product?._id ||
+                  product?.id ||
+                  product?.productId
+                }
+                product={product}
+                onDelete={handleDeleteProduct}
+              />
+            ))
+          ) : (
+            <div
+              className="
+                col-span-full
+                flex
+                min-h-[300px]
+                flex-col
+                items-center
+                justify-center
+                rounded-2xl
+                border
+                border-dashed
+                border-slate-200
+                bg-slate-50
+                px-5
+                text-center
+              "
+            >
+              <div
+                className="
+                  mb-4
+                  flex
+                  h-16
+                  w-16
+                  items-center
+                  justify-center
+                  rounded-full
+                  bg-white
+                  shadow-sm
+                "
+              >
+                <FaBoxOpen className="text-2xl text-slate-400" />
+              </div>
+
+              <h3 className="text-lg font-semibold text-slate-700">
+                No Products Found
+              </h3>
+
+              <p
+                className="
+                  mt-1
+                  max-w-md
+                  text-sm
+                  text-slate-500
+                "
+              >
+                We couldn't find any products matching
+                your search.
+              </p>
+
+              {activeSearch && (
+                <button
+                  type="button"
+                  onClick={handleClearSearch}
+                  className="
+                    mt-5
+                    rounded-xl
+                    bg-[#2E3192]
+                    px-5
+                    py-2.5
+                    text-sm
+                    font-semibold
+                    text-white
+                    transition
+
+                    hover:bg-[#1E216F]
+                  "
+                >
+                  View All Products
+                </button>
+              )}
+            </div>
+          )}
+        </section>
+
+        {/* ===================================================
+            ADD PRODUCT
+        ==================================================== */}
+        {user && (
+          <div
+            className="
+              mx-auto
+              flex
+              w-full
+              max-w-[1500px]
+              justify-center
+              px-5
+              py-8
+
+              sm:px-6
+
+              lg:px-8
+            "
+          >
+            <NavLink
+              to="/add-product"
+              className="
+                inline-flex
+                items-center
+                gap-2
+                rounded-xl
+                bg-[#2E3192]
+                px-6
+                py-3
+                text-sm
+                font-semibold
+                text-white
+                shadow-md
+                transition
+
+                hover:bg-[#1E216F]
+
+                active:scale-[0.98]
+              "
+            >
+              <FaArrowDown className="rotate-[-45deg]" />
+
+              Add Product
+            </NavLink>
+          </div>
+        )}
+      </main>
+    </div>
+  );
 };
 
 export default Products;

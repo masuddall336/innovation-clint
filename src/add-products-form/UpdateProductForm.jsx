@@ -4,6 +4,7 @@ import { FaEdit, FaEye } from "react-icons/fa";
 import { motion } from "framer-motion";
 import Swal from "sweetalert2";
 import ScrollTop from "../components/ScrollTop";
+import Loading from "../components/loading/Loading";
 
 const UpdateProductForm = () => {
     const data = useLoaderData();
@@ -109,6 +110,10 @@ const UpdateProductForm = () => {
         }
     };
 
+    if (loading) {
+        return <Loading />;
+    }
+
     return (
         <div className="min-h-screen bg-gradient-to-br pt-40 from-gray-900 via-gray-800 to-gray-900 py-10 px-4 md:px-8">
             <ScrollTop />
@@ -175,22 +180,14 @@ const UpdateProductForm = () => {
                         {/* BUTTON */}
                         <button
                             type="submit"
-                            disabled={loading}
                             className="w-full py-4 rounded-xl font-semibold text-white shadow-lg flex items-center justify-center gap-3
                          bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500
                          hover:from-pink-500 hover:to-indigo-500 transition cursor-pointer"
                         >
-                            {loading ? (
-                                <>
-                                    <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                                    Updating...
-                                </>
-                            ) : (
-                                <>
-                                    <FaEdit />
-                                    Update Product
-                                </>
-                            )}
+                            <>
+                                <FaEdit />
+                                Update Product
+                            </>
                         </button>
                     </form>
 

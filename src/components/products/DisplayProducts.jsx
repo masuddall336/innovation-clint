@@ -7,12 +7,12 @@ import ProductDetails from "./ProductDetails";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
-const cardVariants = (direction) => ({
-  hidden: { opacity: 0, x: direction === "left" ? -50 : 50, y: 50 },
-  visible: { opacity: 1, x: 0, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
-});
+const cardVariants = {
+  hidden: { opacity: 0, y: 24 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
+};
 
-export default function DisplayProducts({ product, handleDelete, index }) {
+export default function DisplayProducts({ product, handleDelete }) {
   const { name, img_url, description, _id, title } = product;
   const { user } = useContext(AuthContext);
   const [isOpen, setIsOpen] = useState(false);
@@ -28,8 +28,6 @@ export default function DisplayProducts({ product, handleDelete, index }) {
     return () => { if (el) observer.unobserve(el); };
   }, [_id]);
 
-  const direction = index % 2 === 0 ? "left" : "right";
-
   return (
     <>
       <Helmet>
@@ -38,8 +36,8 @@ export default function DisplayProducts({ product, handleDelete, index }) {
 
       <motion.div
         id={_id}
-        className="pack-card bg-red rounded-lg text-[#737373b9] overflow-hidden cursor-pointer max-w-xs mx-auto overflow-hidden"
-        variants={cardVariants(direction)}
+        className="pack-card bg-red rounded-lg text-[#737373b9] cursor-pointer w-full overflow-hidden"
+        variants={cardVariants}
         initial="hidden"
         animate={visible ? "visible" : "hidden"}
         whileHover={{
@@ -71,8 +69,8 @@ export default function DisplayProducts({ product, handleDelete, index }) {
           </div>
         </div>
 
-        <div className="pl-1 space-y-1 bg-white mt-2 p-3 rounded-b-lg cursor-auto">
-          <h4 className="text-[#3b4042] font-bold text-lg">{name}</h4>
+        <div className="space-y-1 bg-white p-2.5 rounded-b-lg cursor-auto">
+          <h4 className="text-[#3b4042] font-bold text-base">{name}</h4>
           <p className="text-sm font-medium text-[#7e7e7e] line-clamp-2">{description}</p>
 
           {user && (

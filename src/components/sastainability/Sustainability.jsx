@@ -1,115 +1,197 @@
-import React, { useEffect, useState } from "react";
-import "./Sustainability.css";
 
-import heroImg from "../../../public/img/Sustainability.jpg";
+import React, { useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import { Helmet } from "react-helmet-async";
+import {
+  ArrowDown,
+  CheckCircle2,
+  Factory,
+  Leaf,
+  Recycle,
+} from "lucide-react";
+
 import ScrollTop from "../ScrollTop";
 
-import { Helmet } from "react-helmet-async";
+import heroImg from "../../../public/img/Sustainability.jpg";
+
+// ======================================================
+// API
+// ======================================================
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+
+const fetchSustainability = async () => {
+  const response = await axios.get(`${API_URL}/sustainability`);
+  return response.data;
+};
+
+// ======================================================
+// DEFAULT / FALLBACK DATA
+// ======================================================
+
+const defaultData = {
+  hero: {
+    badge: "Sustainability",
+    title: "Building a Greener Future",
+    subtitle:
+      "Responsible manufacturing and sustainable solutions for a better tomorrow.",
+  },
+
+  introduction: {
+    title: "Responsible Manufacturing",
+    description:
+      "We continuously improve our manufacturing processes to reduce waste, use resources responsibly, and create a more sustainable future.",
+  },
+
+  initiatives: [
+    {
+      title: "Eco-Friendly Manufacturing",
+      description:
+        "Responsible production methods help us minimize waste and reduce our environmental impact.",
+      icon: "factory",
+    },
+    {
+      title: "Waste Reduction",
+      description:
+        "We focus on efficient material use and practical processes that help reduce unnecessary production waste.",
+      icon: "recycle",
+    },
+  ],
+};
+
+// ======================================================
+// ICON HELPER
+// ======================================================
+
+const getIcon = (icon) => {
+  const className = "h-5 w-5";
+
+  switch (icon?.toLowerCase()) {
+    case "factory":
+      return <Factory className={className} strokeWidth={1.7} />;
+
+    case "recycle":
+      return <Recycle className={className} strokeWidth={1.7} />;
+
+    case "leaf":
+      return <Leaf className={className} strokeWidth={1.7} />;
+
+    default:
+      return <Leaf className={className} strokeWidth={1.7} />;
+  }
+};
+
+// ======================================================
+// COMPONENT
+// ======================================================
 
 const Sustainability = () => {
-  const [pageLoading, setPageLoading] = useState(true);
+  // ====================================================
+  // TANSTACK QUERY
+  // ====================================================
+
+  const {
+    data: apiData,
+    isError,
+    isFetching,
+  } = useQuery({
+    queryKey: ["sustainability"],
+    queryFn: fetchSustainability,
+
+    // Page renders immediately.
+    // API updates in background.
+    initialData: defaultData,
+
+    staleTime: 10 * 60 * 1000,
+    gcTime: 20 * 60 * 1000,
+
+    retry: 1,
+    refetchOnWindowFocus: false,
+  });
+
+  // ====================================================
+  // MERGE API + FALLBACK DATA
+  // ====================================================
+
+  const data = {
+    ...defaultData,
+    ...(apiData?.data || apiData || {}),
+
+    hero: {
+      ...defaultData.hero,
+      ...(apiData?.data?.hero || apiData?.hero || {}),
+    },
+
+    introduction: {
+      ...defaultData.introduction,
+      ...(apiData?.data?.introduction ||
+        apiData?.introduction ||
+        {}),
+    },
+
+    initiatives:
+      apiData?.data?.initiatives ||
+      apiData?.initiatives ||
+      defaultData.initiatives,
+  };
+
+  // ====================================================
+  // SCROLL REVEAL
+  // ====================================================
 
   useEffect(() => {
-    let mounted = true;
+    const elements = document.querySelectorAll(
+      "[data-sustainability-reveal]"
+    );
 
-    const image = new Image();
-
-    image.onload = () => {
-      if (mounted) {
-        // Small delay makes the transition smoother
-        requestAnimationFrame(() => {
-          setPageLoading(false);
-        });
-      }
-    };
-
-    image.onerror = () => {
-      if (mounted) {
-        setPageLoading(false);
-      }
-    };
-
-    image.src = heroImg;
-
-    // Already cached
-    if (image.complete) {
-      setPageLoading(false);
-    }
-
-    return () => {
-      mounted = false;
-    };
-  }, []);
-
-  // Scroll reveal
-  useEffect(() => {
-    const sections = document.querySelectorAll(".reveal");
-
-    if (!sections.length) return;
+    if (!elements.length) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("active");
-            observer.unobserve(entry.target);
-          }
+          if (!entry.isIntersecting) return;
+
+          entry.target.classList.remove(
+            "opacity-0",
+            "translate-y-5"
+          );
+
+          entry.target.classList.add(
+            "opacity-100",
+            "translate-y-0"
+          );
+
+          observer.unobserve(entry.target);
         });
       },
       {
-        threshold: 0.15,
+        threshold: 0.12,
+        rootMargin: "0px 0px -40px 0px",
       }
     );
 
-    sections.forEach((section) => observer.observe(section));
+    elements.forEach((element) => observer.observe(element));
 
     return () => observer.disconnect();
-  }, []);
-
-  // Progress bar
-  useEffect(() => {
-    const bars = document.querySelectorAll(".progress-bar");
-
-    if (!bars.length) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.style.width =
-              `${entry.target.dataset.progress}%`;
-
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      {
-        threshold: 0.5,
-      }
-    );
-
-    bars.forEach((bar) => observer.observe(bar));
-
-    return () => observer.disconnect();
-  }, []);
+  }, [data]);
 
   return (
     <>
-      <Helmet>
-        <meta name="robots" content="index, follow" />
+      <ScrollTop />
 
+      {/* ==================================================
+          SEO
+      ================================================== */}
+
+      <Helmet>
         <title>
-          Sustainability Of Innovation Plastic Cans Ltd.
+          Sustainability | Innovation Plastic Cans Ltd.
         </title>
 
         <meta
           name="description"
-          content="Building a greener future through responsible manufacturing and innovative eco-friendly solutions."
-        />
-
-        <meta
-          name="keywords"
-          content="Sustainability, Ecofriendly, Biodegradable, Green, Lowcarbon, Reuse, Plastic, Packaging"
+          content="Learn about Innovation Plastic Cans Ltd.'s sustainability initiatives, responsible manufacturing practices, waste reduction, and environmental commitment."
         />
 
         <link
@@ -117,106 +199,389 @@ const Sustainability = () => {
           href="https://innovation-plastic.com/sustainability"
         />
 
-        {/* Tell browser to load banner image early */}
-        <link
-          rel="preload"
-          as="image"
-          href={heroImg}
-          fetchPriority="high"
+        <meta
+          property="og:title"
+          content="Sustainability | Innovation Plastic Cans Ltd."
         />
+
+        <meta
+          property="og:description"
+          content="Responsible manufacturing and sustainable solutions from Innovation Plastic Cans Ltd."
+        />
+
+        <meta
+          property="og:type"
+          content="website"
+        />
+
+        {/* ==================================================
+            HERO ANIMATIONS
+        ================================================== */}
+
+        <style>
+          {`
+            @keyframes sustainabilityHeroText {
+              from {
+                opacity: 0;
+                transform: translateY(22px);
+              }
+
+              to {
+                opacity: 1;
+                transform: translateY(0);
+              }
+            }
+
+            @keyframes sustainabilityFade {
+              from {
+                opacity: 0;
+              }
+
+              to {
+                opacity: 1;
+              }
+            }
+
+            @keyframes sustainabilityLine {
+              from {
+                width: 0;
+                opacity: 0;
+              }
+
+              to {
+                width: 56px;
+                opacity: 1;
+              }
+            }
+
+            @keyframes sustainabilityArrow {
+              0%,
+              100% {
+                transform: translateY(0);
+              }
+
+              50% {
+                transform: translateY(4px);
+              }
+            }
+
+            .sustainability-hero-badge {
+              animation:
+                sustainabilityFade
+                0.6s
+                ease-out
+                both;
+            }
+
+            .sustainability-hero-line {
+              animation:
+                sustainabilityLine
+                0.7s
+                ease-out
+                0.15s
+                both;
+            }
+
+            .sustainability-hero-title {
+              animation:
+                sustainabilityHeroText
+                0.75s
+                ease-out
+                0.08s
+                both;
+            }
+
+            .sustainability-hero-description {
+              animation:
+                sustainabilityHeroText
+                0.75s
+                ease-out
+                0.18s
+                both;
+            }
+
+            .sustainability-hero-button {
+              animation:
+                sustainabilityHeroText
+                0.75s
+                ease-out
+                0.28s
+                both;
+            }
+
+            .sustainability-scroll-icon {
+              animation:
+                sustainabilityArrow
+                1.5s
+                ease-in-out
+                infinite;
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+              .sustainability-hero-badge,
+              .sustainability-hero-line,
+              .sustainability-hero-title,
+              .sustainability-hero-description,
+              .sustainability-hero-button,
+              .sustainability-scroll-icon {
+                animation: none !important;
+              }
+            }
+          `}
+        </style>
       </Helmet>
 
-      {/* ==============================
-          FULL PAGE LOADING SCREEN
-      =============================== */}
-      {pageLoading && (
-  <div className="sustainability-page-loader">
-    <div className="sustainability-loader-box">
-      <div className="loader-shimmer"></div>
+      {/* ==================================================
+          HERO — 100VH
+      ================================================== */}
 
-      <div className="loader-logo-box"></div>
+      <section className="relative isolate min-h-screen overflow-hidden bg-slate-950">
+        {/* Background image */}
+        <img
+          src={heroImg}
+          alt="Sustainability at Innovation Plastic Cans Ltd."
+          className="absolute inset-0 h-full w-full object-cover"
+        />
 
-      <div className="loader-title-box"></div>
+        {/* Minimal dark overlay */}
+        <div className="absolute inset-0 bg-slate-950/55" />
 
-      <div className="loader-text-box"></div>
+        {/* Hero content */}
+        <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl items-center px-5 py-20 sm:px-8 lg:px-10">
+          <div className="max-w-2xl text-white">
 
-      <div className="loader-text-box loader-text-short"></div>
+            {/* Badge */}
+            <div className="sustainability-hero-badge mb-5 flex items-center gap-2 text-xs font-medium uppercase tracking-[0.22em] text-white/80">
+              <span className="h-2 w-2 rounded-full bg-[#00A651]" />
 
-      <div className="loader-button-box"></div>
-    </div>
-  </div>
-)}
+              {data.hero.badge || "Sustainability"}
+            </div>
 
-      {/* ==============================
-          ACTUAL PAGE
-      =============================== */}
-      <div
-        className={`sustainability-page ${
-          pageLoading ? "sustainability-hidden" : "sustainability-visible"
-        }`}
+            {/* Green line */}
+            <div className="sustainability-hero-line mb-5 h-[2px] bg-[#00A651]" />
+
+            {/* Title */}
+            <h1 className="sustainability-hero-title max-w-2xl text-4xl font-semibold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl xl:text-7xl">
+              {data.hero.title}
+            </h1>
+
+            {/* Description */}
+            <p className="sustainability-hero-description mt-5 max-w-xl text-sm leading-7 text-white/80 sm:text-base lg:text-lg">
+              {data.hero.subtitle}
+            </p>
+
+            {/* Explore button */}
+            <button
+              type="button"
+              onClick={() => {
+                document
+                  .getElementById("sustainability-content")
+                  ?.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                  });
+              }}
+              className="sustainability-hero-button mt-8 inline-flex items-center gap-2 text-sm font-medium text-white transition-colors duration-300 hover:text-[#00A651]"
+            >
+              Explore our approach
+
+              <ArrowDown
+                size={16}
+                strokeWidth={1.7}
+                className="sustainability-scroll-icon"
+              />
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* ==================================================
+          MAIN CONTENT
+      ================================================== */}
+
+      <main
+        id="sustainability-content"
+        className="bg-white"
       >
-        <ScrollTop />
 
-        {/* ==============================
-            HERO BANNER
-        =============================== */}
-        <section
-          className="hero-section"
-          style={{
-            backgroundImage: `url("${heroImg}")`,
-          }}
-        >
-          <div className="hero-overlay">
-            <h1>Sustainability Of Our Innovation</h1>
+        {/* =================================================
+            INTRODUCTION
+        ================================================= */}
 
-            <p>
-              Building a greener future through responsible manufacturing and
-              innovative eco-friendly solutions.
+        <section className="mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-24">
+          <div
+            data-sustainability-reveal
+            className="mx-auto max-w-3xl translate-y-5 text-center opacity-0 transition-all duration-700 ease-out"
+          >
+            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#2E3192]">
+              Our Commitment
+            </span>
+
+            <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
+              {data.introduction.title}
+            </h2>
+
+            <div className="mx-auto mt-5 h-[2px] w-12 bg-[#00A651]" />
+
+            <p className="mx-auto mt-6 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
+              {data.introduction.description}
             </p>
           </div>
         </section>
 
-        {/* ==============================
-            CONTENT
-        =============================== */}
+        {/* =================================================
+            INITIATIVES
+        ================================================= */}
 
-        <section className="sustain-block reveal">
-          <h2>Eco-Friendly Manufacturing</h2>
+        <section className="border-y border-slate-100 bg-slate-50/60">
+          <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-20 lg:px-10">
 
-          <p>
-            We use advanced technology to minimize waste, reduce emissions, and
-            ensure environmentally responsible production.
-          </p>
-        </section>
+            {/* Section heading */}
+            <div
+              data-sustainability-reveal
+              className="mb-10 translate-y-5 opacity-0 transition-all duration-700 ease-out"
+            >
+              <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#2E3192]">
+                Sustainability In Action
+              </span>
 
-        <section className="sustain-block reveal">
-          <h2>Energy Efficiency</h2>
+              <h2 className="mt-3 text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">
+                Practical Steps Toward a Better Future
+              </h2>
+            </div>
 
-          <p>
-            Our facility includes energy-saving systems and optimized workflows
-            to reduce carbon footprint.
-          </p>
-        </section>
+            {/* Cards */}
+            <div className="grid gap-5 md:grid-cols-2">
+              {data.initiatives?.map((item, index) => (
+                <article
+                  key={item.id || `${item.title}-${index}`}
+                  data-sustainability-reveal
+                  className="group translate-y-5 rounded-2xl border border-slate-200 bg-white p-7 opacity-0 shadow-sm transition-all duration-700 ease-out hover:-translate-y-1 hover:border-[#2E3192]/20 hover:shadow-md"
+                  style={{
+                    transitionDelay: `${index * 100}ms`,
+                  }}
+                >
+                  <div className="flex items-start gap-5">
 
-        {/* ==============================
-            SUSTAINABILITY GOALS
-        =============================== */}
+                    {/* Icon */}
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#2E3192]/5 text-[#2E3192] transition-colors duration-300 group-hover:bg-[#2E3192] group-hover:text-white">
+                      {getIcon(item.icon)}
+                    </div>
 
-        <section className="sustain-block reveal">
-          <h2>Our Sustainability Goals</h2>
+                    {/* Content */}
+                    <div>
+                      <h3 className="text-lg font-semibold text-slate-900">
+                        {item.title}
+                      </h3>
 
-          <div className="progress-item">
-            <span>Energy Saving (40%)</span>
-
-            <div className="progress-container">
-              <div
-                className="progress-bar"
-                data-progress="40"
-              ></div>
+                      <p className="mt-2 text-sm leading-6 text-slate-600">
+                        {item.description}
+                      </p>
+                    </div>
+                  </div>
+                </article>
+              ))}
             </div>
           </div>
         </section>
-      </div>
+
+        {/* =================================================
+            OUR APPROACH
+        ================================================= */}
+
+        <section className="mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-20 lg:px-10">
+          <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
+
+            {/* Heading */}
+            <div
+              data-sustainability-reveal
+              className="translate-y-5 opacity-0 transition-all duration-700 ease-out"
+            >
+              <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#2E3192]">
+                Our Approach
+              </span>
+
+              <h2 className="mt-3 text-3xl font-semibold leading-tight tracking-tight text-slate-900 sm:text-4xl">
+                Better Manufacturing.
+                <br />
+
+                <span className="text-[#2E3192]">
+                  Better Tomorrow.
+                </span>
+              </h2>
+            </div>
+
+            {/* Principles */}
+            <div
+              data-sustainability-reveal
+              className="translate-y-5 opacity-0 transition-all duration-700 ease-out"
+            >
+              <div className="space-y-5">
+
+                {[
+                  "Responsible use of materials",
+                  "Reducing unnecessary production waste",
+                  "Continuous improvement of manufacturing practices",
+                  "Creating sustainable long-term value",
+                ].map((item) => (
+                  <div
+                    key={item}
+                    className="flex items-start gap-3"
+                  >
+                    <CheckCircle2
+                      className="mt-0.5 shrink-0 text-[#00A651]"
+                      size={19}
+                      strokeWidth={1.8}
+                    />
+
+                    <p className="text-sm leading-6 text-slate-600 sm:text-base">
+                      {item}
+                    </p>
+                  </div>
+                ))}
+
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* =================================================
+            FINAL CTA
+        ================================================= */}
+
+        <section className="border-t border-slate-100 bg-white">
+          <div
+            data-sustainability-reveal
+            className="mx-auto max-w-4xl translate-y-5 px-5 py-16 text-center opacity-0 transition-all duration-700 ease-out sm:px-8 sm:py-20"
+          >
+            <Leaf
+              className="mx-auto text-[#00A651]"
+              size={30}
+              strokeWidth={1.5}
+            />
+
+            <h2 className="mt-4 text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">
+              Sustainability Starts With Responsible Choices
+            </h2>
+
+            <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-slate-600">
+              At Innovation Plastic Cans Ltd., we continue to look for
+              practical ways to improve our processes and reduce our
+              environmental impact.
+            </p>
+          </div>
+        </section>
+      </main>
+
+      {/* ==================================================
+          API STATUS
+      ================================================== */}
+
+      {isError && !isFetching && (
+        <div className="fixed bottom-4 right-4 z-50 rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs text-slate-500 shadow-lg">
+          Showing available sustainability information.
+        </div>
+      )}
     </>
   );
 };

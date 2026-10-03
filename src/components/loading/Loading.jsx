@@ -1,95 +1,25 @@
 
 import React from "react";
 import { motion } from "framer-motion";
+import logo from "../../../public/logo/IPCL_logo.png";
 
 const Loading = () => {
+  const dots = Array.from({ length: 8 });
+
   return (
-    <div className="fixed inset-0 z-[99999] flex items-center justify-center overflow-hidden bg-[#050914]">
-      {/* Soft Ambient Glow */}
-      <motion.div
-        animate={{
-          scale: [1, 1.12, 1],
-          opacity: [0.12, 0.2, 0.12],
-        }}
-        transition={{
-          duration: 3.5,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        className="
-          pointer-events-none
-          absolute
-          h-[280px]
-          w-[280px]
-          rounded-full
-          bg-[#00AEEF]/20
-          blur-[100px]
-        "
-      />
+    <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-[#050914] overflow-hidden">
+      {/* Very subtle background glow */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,174,239,0.055),transparent_45%)]" />
 
-      {/* Subtle Background Gradient */}
-      <div
-        className="
-          pointer-events-none
-          absolute
-          inset-0
-          bg-[radial-gradient(circle_at_center,rgba(0,174,239,0.055),transparent_45%)]
-        "
-      />
-
-      {/* Main Loader */}
-      <div className="relative flex w-full flex-col items-center px-6">
-        {/* Minimal Logo Mark */}
-        <div className="relative flex h-28 w-28 items-center justify-center">
-          {/* Outer Soft Ring */}
+      {/* Loader */}
+      <div className="relative flex flex-col items-center justify-center">
+        {/* Circular loader */}
+        <div className="relative flex h-32 w-32 items-center justify-center">
+          {/* Soft outer glow */}
           <motion.div
             animate={{
-              rotate: 360,
-            }}
-            transition={{
-              duration: 8,
-              repeat: Infinity,
-              ease: "linear",
-            }}
-            className="
-              absolute
-              inset-0
-              rounded-full
-              border
-              border-white/[0.08]
-              border-t-[#00AEEF]/80
-            "
-          />
-
-          {/* Inner Ring */}
-          <motion.div
-            animate={{
-              rotate: -360,
-            }}
-            transition={{
-              duration: 5,
-              repeat: Infinity,
-              ease: "linear",
-            }}
-            className="
-              absolute
-              inset-3
-              rounded-full
-              border
-              border-transparent
-              border-b-[#94459A]/60
-            "
-          />
-
-          {/* Center */}
-          <motion.div
-            animate={{
-              scale: [1, 1.035, 1],
-              boxShadow: [
-                "0 0 20px rgba(0,174,239,0.08)",
-                "0 0 35px rgba(0,174,239,0.18)",
-                "0 0 20px rgba(0,174,239,0.08)",
-              ],
+              scale: [0.95, 1.08, 0.95],
+              opacity: [0.2, 0.4, 0.2],
             }}
             transition={{
               duration: 2.2,
@@ -97,173 +27,151 @@ const Loading = () => {
               ease: "easeInOut",
             }}
             className="
+              absolute
+              inset-2
+              rounded-full
+              bg-[#00AEEF]/10
+              blur-xl
+            "
+          />
+
+          {/* Outer circle */}
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+              ease: "linear",
+            }}
+            className="
+              absolute
+              inset-1
+              rounded-full
+              border
+              border-[#00AEEF]/20
+            "
+          />
+
+          {/* Moving glowing ring */}
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{
+              duration: 1.8,
+              repeat: Infinity,
+              ease: "linear",
+            }}
+            className="
+              absolute
+              inset-1
+              rounded-full
+              border-2
+              border-transparent
+              border-t-[#00AEEF]
+              border-r-[#00AEEF]/30
+              shadow-[0_0_14px_rgba(0,174,239,0.7)]
+            "
+          />
+
+          {/* Dots */}
+          {dots.map((_, index) => {
+            const angle = index * 45;
+
+            return (
+              <motion.span
+                key={index}
+                className="
+                  absolute
+                  left-1/2
+                  top-1/2
+                  h-1.5
+                  w-1.5
+                  rounded-full
+                  bg-[#00AEEF]
+                "
+                style={{
+                  transform: `rotate(${angle}deg) translateY(-58px)`,
+                  transformOrigin: "0 58px",
+                }}
+                animate={{
+                  opacity: [0.15, 1, 0.15],
+                  scale: [0.7, 1.25, 0.7],
+                  boxShadow: [
+                    "0 0 0px rgba(0,174,239,0)",
+                    "0 0 9px rgba(0,174,239,0.9)",
+                    "0 0 0px rgba(0,174,239,0)",
+                  ],
+                }}
+                transition={{
+                  duration: 1.4,
+                  repeat: Infinity,
+                  delay: index * 0.12,
+                  ease: "easeInOut",
+                }}
+              />
+            );
+          })}
+
+          {/* Logo center */}
+          <motion.div
+            animate={{
+              opacity: [0.88, 1, 0.88],
+              scale: [0.97, 1, 0.97],
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+            className="
               relative
+              z-10
               flex
-              h-[76px]
-              w-[76px]
+              h-20
+              w-20
               items-center
               justify-center
               rounded-full
-              border
-              border-white/[0.10]
-              bg-white/[0.035]
-              backdrop-blur-xl
+              bg-[#050914]
             "
           >
-            <span
+            <img
+              src={logo}
+              alt="Innovation Plastic Cans"
               className="
+                h-12
+                w-auto
+                max-w-[64px]
+                object-contain
                 select-none
-                text-xl
-                font-black
-                tracking-[0.16em]
-                text-white
-              "
-            >
-              IPC
-            </span>
-
-            {/* Small Status Dot */}
-            <motion.span
-              animate={{
-                opacity: [0.35, 1, 0.35],
-                scale: [0.85, 1, 0.85],
-              }}
-              transition={{
-                duration: 1.4,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-              className="
-                absolute
-                right-[13px]
-                top-[13px]
-                h-1.5
-                w-1.5
-                rounded-full
-                bg-[#00AEEF]
-                shadow-[0_0_8px_#00AEEF]
               "
             />
           </motion.div>
         </div>
 
-        {/* Company Information */}
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{
-            duration: 0.6,
-            ease: [0.22, 1, 0.36, 1],
-          }}
-          className="mt-6 text-center"
-        >
-          <h2 className="text-base font-semibold tracking-[0.28em] text-white">
-            IPC
-          </h2>
-
-          <p className="mt-2 text-[8px] font-medium uppercase tracking-[0.32em] text-white/40">
-            Intelligent Protection & Control
-          </p>
-        </motion.div>
-
-        {/* Smart Loading Status */}
-        <div className="mt-7 w-48">
-          <div className="mb-2 flex items-center justify-between">
-            <span className="text-[8px] uppercase tracking-[0.22em] text-white/30">
-              System
-            </span>
-
+        {/* Minimal loading dots */}
+        <div className="mt-7 flex items-center gap-1.5">
+          {[0, 1, 2].map((index) => (
             <motion.span
-              animate={{ opacity: [0.45, 1, 0.45] }}
+              key={index}
+              className="h-1.5 w-1.5 rounded-full bg-[#00AEEF]"
+              animate={{
+                opacity: [0.25, 1, 0.25],
+                scale: [0.75, 1.15, 0.75],
+                boxShadow: [
+                  "0 0 0px rgba(0,174,239,0)",
+                  "0 0 7px rgba(0,174,239,0.8)",
+                  "0 0 0px rgba(0,174,239,0)",
+                ],
+              }}
               transition={{
-                duration: 1.5,
+                duration: 1,
                 repeat: Infinity,
+                delay: index * 0.18,
                 ease: "easeInOut",
               }}
-              className="
-                text-[8px]
-                font-medium
-                uppercase
-                tracking-[0.2em]
-                text-[#00AEEF]/80
-              "
-            >
-              Loading
-            </motion.span>
-          </div>
-
-          {/* Progress Track */}
-          <div className="relative h-[2px] w-full overflow-hidden rounded-full bg-white/[0.08]">
-            <motion.div
-              initial={{ x: "-100%" }}
-              animate={{ x: "200%" }}
-              transition={{
-                duration: 1.7,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-              className="
-                absolute
-                left-0
-                top-0
-                h-full
-                w-1/2
-                rounded-full
-                bg-gradient-to-r
-                from-transparent
-                via-[#00AEEF]
-                to-transparent
-                shadow-[0_0_8px_rgba(0,174,239,0.7)]
-              "
             />
-          </div>
+          ))}
         </div>
-
-        {/* Small Status */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4, duration: 0.6 }}
-          className="mt-5 flex items-center gap-2"
-        >
-          <motion.span
-            animate={{
-              opacity: [0.3, 1, 0.3],
-            }}
-            transition={{
-              duration: 1.2,
-              repeat: Infinity,
-            }}
-            className="
-              h-1.5
-              w-1.5
-              rounded-full
-              bg-[#00AEEF]
-            "
-          />
-
-          <span className="text-[7px] uppercase tracking-[0.28em] text-white/25">
-            Initializing System
-          </span>
-        </motion.div>
-      </div>
-
-      {/* Bottom Branding */}
-      <div
-        className="
-          absolute
-          bottom-6
-          left-0
-          right-0
-          flex
-          justify-center
-          text-[7px]
-          uppercase
-          tracking-[0.3em]
-          text-white/[0.18]
-        "
-      >
-        IPC // Secure Environment
       </div>
     </div>
   );

@@ -2,6 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import videoFile from "../../assets/video/IPC.mp4";
+import Loading from "../loading/Loading";
 
 const Video = () => {
   const videoRef = useRef(null);
@@ -59,18 +60,16 @@ const Video = () => {
 
   // =========================================================
   // SAFETY FALLBACK
-  // Don't allow intro to hang on slow devices
   // =========================================================
   useEffect(() => {
     if (!showVideo) return;
 
-    // 7 seconds is enough for an intro video.
     fallbackTimerRef.current = setTimeout(() => {
       if (!mountedRef.current) return;
 
       console.warn("Intro video timeout.");
       closeVideo();
-    }, 7000);
+    }, 4000);
 
     return () => {
       if (fallbackTimerRef.current) {
@@ -115,17 +114,18 @@ const Video = () => {
   const handleCanPlay = () => {
     if (!mountedRef.current) return;
 
-    handleVideoReady();
-
     const video = videoRef.current;
 
     if (!video) return;
 
-    // Do not force play().
-    // autoPlay + muted + playsInline are enough.
+    // 2X SPEED
+    video.playbackRate = 2;
+    video.defaultPlaybackRate = 2;
+
+    handleVideoReady();
+
     if (video.paused) {
       video.play().catch(() => {
-        // If autoplay is blocked, simply skip the intro.
         if (mountedRef.current) {
           closeVideo();
         }
@@ -158,9 +158,8 @@ const Video = () => {
           "
         >
           {/* =================================================
-              LIGHTWEIGHT BACKGROUND
+              BACKGROUND
           ================================================= */}
-
           <div
             className="
               absolute
@@ -172,15 +171,19 @@ const Video = () => {
             "
           />
 
-          {/* Simple glow - no huge blur animation */}
+          {/* =================================================
+              CENTER GLOW
+          ================================================= */}
           <div
             className="
               pointer-events-none
               absolute
               left-1/2
               top-1/2
-              h-[220px]
-              w-[220px]
+              h-[180px]
+              w-[180px]
+              sm:h-[220px]
+              sm:w-[220px]
               -translate-x-1/2
               -translate-y-1/2
               rounded-full
@@ -191,9 +194,14 @@ const Video = () => {
 
           {/* =================================================
               VIDEO
-          ================================================= */}
+              
+              Mobile:
+              object-contain = entire video visible
 
-          <motion.video
+              Desktop:
+              object-cover = fills entire screen
+          ================================================= */}
+          <video
             ref={videoRef}
             autoPlay
             muted
@@ -203,221 +211,58 @@ const Video = () => {
             onLoadedData={handleVideoReady}
             onEnded={handleVideoEnd}
             onError={handleVideoError}
-            initial={{
-              opacity: 0,
-              scale: 1.02,
-            }}
-            animate={{
-              opacity: videoReady ? 1 : 0,
-              scale: videoReady ? 1 : 1.02,
-            }}
-            transition={{
-              duration: 0.35,
-              ease: "easeOut",
-            }}
             className="
-              absolute
-              inset-0
+              relative
+              z-10
               h-full
               w-full
-              object-cover
+              object-contain
+              xl:object-cover
             "
           >
-            <source src={videoFile} type="video/mp4" />
-          </motion.video>
+            <source
+              src={videoFile}
+              type="video/mp4"
+            />
+          </video>
 
           {/* =================================================
-              VIDEO OVERLAY
+              MOBILE BACKGROUND FILL
+              
+              Prevents harsh empty areas when video uses
+              object-contain on portrait/mobile screens.
           ================================================= */}
-
           <div
             className="
               pointer-events-none
               absolute
               inset-0
-              bg-black/15
+              z-20
+              bg-black/10
             "
           />
 
           {/* =================================================
-              LIGHTWEIGHT LOADING UI
+              VIDEO OVERLAY
           ================================================= */}
-
-          <AnimatePresence>
-            {!videoReady && (
-              <motion.div
-                initial={{
-                  opacity: 0,
-                  scale: 0.96,
-                }}
-                animate={{
-                  opacity: 1,
-                  scale: 1,
-                }}
-                exit={{
-                  opacity: 0,
-                  scale: 0.96,
-                }}
-                transition={{
-                  duration: 0.25,
-                }}
-                className="
-                  relative
-                  z-10
-                  flex
-                  flex-col
-                  items-center
-                "
-              >
-                {/* Brand Box */}
-
-                <div
-                  className="
-                    relative
-                    mb-5
-                    flex
-                    h-16
-                    w-16
-                    items-center
-                    justify-center
-                    rounded-2xl
-                    border
-                    border-white/15
-                    bg-white/10
-                    shadow-xl
-                    backdrop-blur-sm
-                  "
-                >
-                  <div
-                    className="
-                      h-9
-                      w-9
-                      rounded-xl
-                      bg-gradient-to-br
-                      from-[#00AEEF]
-                      via-[#94459A]
-                      to-[#172A8A]
-                    "
-                  />
-                </div>
-
-                {/* CSS LOADER */}
-
-                <div
-                  className="
-                    mb-3
-                    flex
-                    items-center
-                    gap-1.5
-                  "
-                >
-                  <span className="video-dot" />
-                  <span
-                    className="video-dot"
-                    style={{ animationDelay: "0.15s" }}
-                  />
-                  <span
-                    className="video-dot"
-                    style={{ animationDelay: "0.3s" }}
-                  />
-                </div>
-
-                <p
-                  className="
-                    text-[10px]
-                    font-medium
-                    uppercase
-                    tracking-[0.35em]
-                    text-white/70
-                  "
-                >
-                  Loading
-                </p>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          <div
+            className="
+              pointer-events-none
+              absolute
+              inset-0
+              z-30
+              bg-black/10
+            "
+          />
 
           {/* =================================================
-              BOTTOM PROGRESS
+              LOADING
           ================================================= */}
-
           {!videoReady && (
-            <div
-              className="
-                absolute
-                bottom-0
-                left-0
-                h-[2px]
-                w-full
-                overflow-hidden
-                bg-white/10
-              "
-            >
-              <div
-                className="
-                  video-progress
-                  h-full
-                  w-1/3
-                  bg-gradient-to-r
-                  from-[#00AEEF]
-                  via-[#94459A]
-                  to-[#172A8A]
-                "
-              />
+            <div className="absolute inset-0 z-40 flex items-center justify-center">
+              <Loading />
             </div>
           )}
-
-          {/* =================================================
-              SMALL INLINE STYLE
-          ================================================= */}
-
-          <style>{`
-            .video-dot {
-              display: block;
-              width: 7px;
-              height: 7px;
-              border-radius: 9999px;
-              background: white;
-              opacity: 0.35;
-              animation: videoDot 0.8s ease-in-out infinite;
-              will-change: transform, opacity;
-            }
-
-            @keyframes videoDot {
-              0%,
-              100% {
-                transform: translateY(0) scale(0.85);
-                opacity: 0.35;
-              }
-
-              50% {
-                transform: translateY(-5px) scale(1);
-                opacity: 1;
-              }
-            }
-
-            .video-progress {
-              animation: videoProgress 1.2s ease-in-out infinite;
-              will-change: transform;
-            }
-
-            @keyframes videoProgress {
-              0% {
-                transform: translateX(-120%);
-              }
-
-              100% {
-                transform: translateX(350%);
-              }
-            }
-
-            @media (prefers-reduced-motion: reduce) {
-              .video-dot,
-              .video-progress {
-                animation: none !important;
-              }
-            }
-          `}</style>
         </motion.div>
       )}
     </AnimatePresence>
