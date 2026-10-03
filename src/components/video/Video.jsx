@@ -164,10 +164,7 @@ const Video = () => {
             className="
               absolute
               inset-0
-              bg-gradient-to-br
-              from-[#07111f]
-              via-[#172A8A]
-              to-[#94459A]
+              bg-[#fff]
             "
           />
 
