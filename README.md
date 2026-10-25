@@ -1,4 +1,16 @@
-# React + Vite
+# Innovation Plastic Cans Ltd.
+
+## Deploying to cPanel
+
+Build the production site with `npm run build`, then upload **the contents of the generated `dist` folder** to the domain's document root (usually `public_html`). Keep `index.html`, the `assets` folder, and `.htaccess` together in that directory. Do not upload only `index.html` or place the files inside an extra `dist` directory.
+
+The Vite base path is `/`, so this deployment expects the site at the domain root. The `.htaccess` file enables React Router URLs such as `/products/:id` and ensures missing files under `/assets` return a real 404 instead of the HTML page with the wrong MIME type. If the site is hosted under a subdirectory, configure Vite's `base` to that subdirectory before building.
+
+After uploading, if the browser still shows an older blank page, clear the cPanel/CDN cache and do a hard refresh so the latest `index.html` is used with its matching hashed asset files.
+
+---
+
+## React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 

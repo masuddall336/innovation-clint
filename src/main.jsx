@@ -1,31 +1,40 @@
 
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import App from './App.jsx'
-import Sustainability from './components/sastainability/Sustainability.jsx'
+import { lazy } from 'react'
 import { createBrowserRouter } from 'react-router-dom'
 import { RouterProvider } from 'react-router-dom'
 import Root from './Root.jsx'
-import Contactus from './components/contactus/Contactus.jsx'
-import Qc_Qa from './components/qc&qa/Qc_Qa.jsx'
-import Products from './components/products/Products.jsx'
-import Gallery from './components/gallery/Gallery.jsx'
 import { HelmetProvider } from 'react-helmet-async'
-import Sitemap from './components/sitemap/Sitemap.jsx'
-import Login from './login/Login.jsx'
-import Register from './login/Register.jsx'
 import AuthProvider from './firebase/AuthProvider.jsx'
-import AddProducts from './add-products-form/AddProducts.jsx'
-import LoadData from './components/products/LoadData.jsx'
-import UpdateProductForm from './add-products-form/UpdateProductForm.jsx'
-import PrivacyPolicy from './components/PrivacyPolicy.jsx'
-import CookiePolicy from './components/CookiePolicy.jsx'
 import Video from './components/video/Video.jsx'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 60_000,
+      refetchOnWindowFocus: false,
+    },
+  },
+})
+
+const App = lazy(() => import('./App.jsx'))
+const Sustainability = lazy(() => import('./components/sastainability/Sustainability.jsx'))
+const Contactus = lazy(() => import('./components/contactus/Contactus.jsx'))
+const Qc_Qa = lazy(() => import('./components/qc&qa/Qc_Qa.jsx'))
+const Products = lazy(() => import('./components/products/Products.jsx'))
+const Gallery = lazy(() => import('./components/gallery/Gallery.jsx'))
+const Sitemap = lazy(() => import('./components/sitemap/Sitemap.jsx'))
+const Login = lazy(() => import('./login/Login.jsx'))
+const Register = lazy(() => import('./login/Register.jsx'))
+const AddProducts = lazy(() => import('./add-products-form/AddProducts.jsx'))
+const LoadData = lazy(() => import('./components/products/LoadData.jsx'))
+const UpdateProductForm = lazy(() => import('./add-products-form/UpdateProductForm.jsx'))
+const PrivacyPolicy = lazy(() => import('./components/PrivacyPolicy.jsx'))
+const CookiePolicy = lazy(() => import('./components/CookiePolicy.jsx'))
 
 let router = createBrowserRouter([
   {

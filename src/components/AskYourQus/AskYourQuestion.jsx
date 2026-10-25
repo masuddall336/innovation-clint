@@ -74,7 +74,7 @@ const AskYourQuestion = ({ isOpen, onClose }) => {
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex px-[15px] py-[20px] items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity duration-300 ${
+      className={`fixed inset-0 z-[10030] flex px-[15px] py-[20px] items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity duration-300 ${
         animate ? "opacity-100" : "opacity-0"
       }`}
       onClick={(e) => e.target === e.currentTarget && handleClose()}

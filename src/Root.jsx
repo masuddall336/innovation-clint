@@ -1,4 +1,5 @@
 import { Outlet, useNavigation } from "react-router-dom";
+import { Suspense } from "react";
 import Navbar from "./components/navbar/Navbar";
 import Footer from "./components/footer/Footer";
 import Loading from "./components/loading/Loading";
@@ -15,7 +16,9 @@ export default function Root() {
         <div>
             <ScrollProgress />
             <Navbar />
-            <Outlet />
+            <Suspense fallback={<Loading />}>
+                <Outlet />
+            </Suspense>
             <Footer />
         </div>
     )

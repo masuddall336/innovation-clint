@@ -12,6 +12,8 @@ import {
   FaRotate,
   FaMagnifyingGlass,
   FaXmark,
+  FaFilter,
+  FaLayerGroup,
 } from "react-icons/fa6";
 
 import Swal from "sweetalert2";
@@ -25,6 +27,8 @@ const Products = () => {
 
   const [searchInput, setSearchInput] = useState("");
   const [activeSearch, setActiveSearch] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("all");
+  const [materialFilter, setMaterialFilter] = useState("all");
 
   const API_URL = import.meta.env.VITE_API_URL;
 
@@ -72,12 +76,18 @@ const Products = () => {
   /* =====================================================
      SEARCH
   ====================================================== */
+  const categoryOptions = useMemo(
+    () => [...new Set(products.map((product) => product?.category?.trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b)),
+    [products]
+  );
+
+  const materialOptions = useMemo(
+    () => [...new Set(products.map((product) => product?.material?.trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b)),
+    [products]
+  );
+
   const filteredProducts = useMemo(() => {
     const search = activeSearch.trim().toLowerCase();
-
-    if (!search) {
-      return products;
-    }
 
     return products.filter((product) => {
       const title = product?.title || "";
@@ -96,12 +106,18 @@ const Products = () => {
         ${name}
         ${category}
         ${subcategory}
+        ${product?.material || ""}
+        ${product?.capacity || ""}
         ${description}
       `.toLowerCase();
 
-      return searchableText.includes(search);
+      const matchesSearch = !search || searchableText.includes(search);
+      const matchesCategory = categoryFilter === "all" || product?.category?.trim() === categoryFilter;
+      const matchesMaterial = materialFilter === "all" || product?.material?.trim() === materialFilter;
+
+      return matchesSearch && matchesCategory && matchesMaterial;
     });
-  }, [products, activeSearch]);
+  }, [products, activeSearch, categoryFilter, materialFilter]);
 
   /* =====================================================
      SEARCH SUBMIT
@@ -119,6 +135,15 @@ const Products = () => {
     setSearchInput("");
     setActiveSearch("");
   };
+
+  const handleClearFilters = () => {
+    setCategoryFilter("all");
+    setMaterialFilter("all");
+    handleClearSearch();
+  };
+
+  const formatFilterLabel = (value) =>
+    value.replace(/[_-]+/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
 
   /* =====================================================
      DELETE PRODUCT
@@ -504,7 +529,7 @@ const Products = () => {
         {/* ===================================================
             SEARCH RESULT INFO
         ==================================================== */}
-        {activeSearch && (
+        {(activeSearch || categoryFilter !== "all" || materialFilter !== "all") && (
           <div
             className="
               mx-auto
@@ -532,15 +557,15 @@ const Products = () => {
               "
             >
               <p className="text-sm text-slate-600">
-                Search results for{" "}
-                <span className="font-semibold text-[#2E3192]">
-                  "{activeSearch}"
-                </span>
+                Showing {filteredProducts.length} product{filteredProducts.length === 1 ? "" : "s"}
+                {activeSearch && <> matching <span className="font-semibold text-[#2E3192]">“{activeSearch}”</span></>}
+                {categoryFilter !== "all" && <> in <span className="font-semibold text-[#2E3192]">{formatFilterLabel(categoryFilter)}</span></>}
+                {materialFilter !== "all" && <> made with <span className="font-semibold text-[#2E3192]">{formatFilterLabel(materialFilter)}</span></>}
               </p>
 
               <button
                 type="button"
-                onClick={handleClearSearch}
+                onClick={handleClearFilters}
                 className="
                   text-xs
                   font-semibold
@@ -559,28 +584,142 @@ const Products = () => {
         {/* ===================================================
             PRODUCTS GRID
         ==================================================== */}
-        <section
+        <div
           className="
-            products-section
             mx-auto
-            grid
+            flex
             w-full
             max-w-[1440px]
             min-w-0
-            grid-cols-1
-            gap-2
-            overflow-x-clip
-            px-3
-
-            sm:grid-cols-2
-            sm:px-4
-
-            md:grid-cols-3
-
-            lg:grid-cols-4
-            lg:px-6
+            flex-col
+            gap-6
+            px-5
+            py-5
+            sm:px-6
+            lg:flex-row
+            lg:items-start
+            lg:px-8
           "
         >
+          <aside
+            aria-label="Product filters"
+            className="
+              w-full
+              shrink-0
+              rounded-2xl
+              border border-white/90
+              bg-[#e9edf4]
+              p-4
+              shadow-[8px_8px_18px_rgba(151,160,178,0.38),-7px_-7px_16px_rgba(255,255,255,0.95)]
+              lg:sticky
+              lg:top-28
+              lg:w-[248px]
+            "
+          >
+            <div className="mb-4 flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2.5">
+                <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/75 text-[#2E3192] shadow-[3px_3px_7px_rgba(151,160,178,0.32),-3px_-3px_7px_rgba(255,255,255,0.95)]">
+                  <FaFilter aria-hidden="true" />
+                </span>
+                <div>
+                  <h2 className="text-sm font-bold text-slate-800">Filter products</h2>
+                  <p className="text-xs text-slate-500">Narrow the collection</p>
+                </div>
+              </div>
+              {(categoryFilter !== "all" || materialFilter !== "all" || activeSearch) && (
+                <button
+                  type="button"
+                  onClick={handleClearFilters}
+                  className="rounded-lg px-2 py-1 text-xs font-semibold text-[#2E3192] transition hover:bg-white/70"
+                >
+                  Reset
+                </button>
+              )}
+            </div>
+
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-1">
+              <div>
+                <h3 className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.12em] text-slate-500">
+                  <FaLayerGroup aria-hidden="true" /> Category
+                </h3>
+                <div className="product-filter-scroll max-h-52 space-y-1 overflow-y-auto pr-1 lg:max-h-56">
+                  <button
+                    type="button"
+                    onClick={() => setCategoryFilter("all")}
+                    aria-pressed={categoryFilter === "all"}
+                    className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-[13px] transition ${categoryFilter === "all" ? "bg-[#2E3192] font-semibold text-white shadow-[inset_2px_2px_5px_rgba(14,18,79,0.28),0_4px_10px_rgba(46,49,146,0.2)]" : "text-slate-700 hover:bg-white/70"}`}
+                  >
+                    <span>All products</span>
+                    <span className={`text-xs ${categoryFilter === "all" ? "text-white/75" : "text-slate-400"}`}>{products.length}</span>
+                  </button>
+                  {categoryOptions.map((category) => {
+                    const count = products.filter((product) => product?.category?.trim() === category).length;
+                    const active = categoryFilter === category;
+                    return (
+                      <button
+                        key={category}
+                        type="button"
+                        onClick={() => setCategoryFilter(category)}
+                        aria-pressed={active}
+                        className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-[13px] transition ${active ? "bg-[#2E3192] font-semibold text-white shadow-[inset_2px_2px_5px_rgba(14,18,79,0.28),0_4px_10px_rgba(46,49,146,0.2)]" : "text-slate-700 hover:bg-white/70"}`}
+                      >
+                        <span>{formatFilterLabel(category)}</span>
+                        <span className={`text-xs ${active ? "text-white/75" : "text-slate-400"}`}>{count}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {materialOptions.length > 0 && (
+                <div>
+                  <h3 className="mb-2 text-xs font-bold uppercase tracking-[0.12em] text-slate-500">Material</h3>
+                  <div className="product-filter-scroll max-h-40 space-y-1 overflow-y-auto pr-1 lg:max-h-44">
+                    <button
+                      type="button"
+                      onClick={() => setMaterialFilter("all")}
+                      aria-pressed={materialFilter === "all"}
+                      className={`w-full rounded-lg px-3 py-2 text-left text-[13px] transition ${materialFilter === "all" ? "bg-white/80 font-semibold text-[#2E3192] shadow-[inset_2px_2px_5px_rgba(151,160,178,0.2),inset_-2px_-2px_5px_rgba(255,255,255,0.95)]" : "text-slate-700 hover:bg-white/70"}`}
+                    >
+                      Any material
+                    </button>
+                    {materialOptions.map((material) => {
+                      const active = materialFilter === material;
+                      return (
+                        <button
+                          key={material}
+                          type="button"
+                          onClick={() => setMaterialFilter(material)}
+                          aria-pressed={active}
+                          className={`w-full rounded-lg px-3 py-2 text-left text-[13px] transition ${active ? "bg-white/80 font-semibold text-[#2E3192] shadow-[inset_2px_2px_5px_rgba(151,160,178,0.2),inset_-2px_-2px_5px_rgba(255,255,255,0.95)]" : "text-slate-700 hover:bg-white/70"}`}
+                        >
+                          {formatFilterLabel(material)}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+          </aside>
+
+          <section
+            className="
+            products-section
+            grid
+            min-w-0
+            flex-1
+            grid-cols-1
+            gap-6
+            overflow-x-clip
+
+            sm:grid-cols-2
+            md:grid-cols-3
+            lg:grid-cols-2
+            xl:grid-cols-3
+            2xl:grid-cols-4
+          "
+          >
           {filteredProducts.length > 0 ? (
             filteredProducts.map((product) => (
               <DisplayProducts
@@ -639,14 +778,13 @@ const Products = () => {
                   text-slate-500
                 "
               >
-                We couldn't find any products matching
-                your search.
+                  Try adjusting or clearing your search and filters.
               </p>
 
-              {activeSearch && (
+              {(activeSearch || categoryFilter !== "all" || materialFilter !== "all") && (
                 <button
                   type="button"
-                  onClick={handleClearSearch}
+                  onClick={handleClearFilters}
                   className="
                     mt-5
                     rounded-xl
@@ -666,7 +804,8 @@ const Products = () => {
               )}
             </div>
           )}
-        </section>
+          </section>
+        </div>
 
         {/* ===================================================
             ADD PRODUCT

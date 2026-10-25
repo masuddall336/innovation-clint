@@ -1,5 +1,4 @@
 
-import React, { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Helmet } from "react-helmet-async";
@@ -13,7 +12,7 @@ import {
 
 import ScrollTop from "../ScrollTop";
 
-import heroImg from "../../../public/img/Sustainability.jpg";
+const heroImg = "/img/Sustainability.jpg";
 
 // ======================================================
 // API
@@ -93,8 +92,6 @@ const Sustainability = () => {
 
   const {
     data: apiData,
-    isError,
-    isFetching,
   } = useQuery({
     queryKey: ["sustainability"],
     queryFn: fetchSustainability,
@@ -135,46 +132,6 @@ const Sustainability = () => {
       apiData?.initiatives ||
       defaultData.initiatives,
   };
-
-  // ====================================================
-  // SCROLL REVEAL
-  // ====================================================
-
-  useEffect(() => {
-    const elements = document.querySelectorAll(
-      "[data-sustainability-reveal]"
-    );
-
-    if (!elements.length) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-
-          entry.target.classList.remove(
-            "opacity-0",
-            "translate-y-5"
-          );
-
-          entry.target.classList.add(
-            "opacity-100",
-            "translate-y-0"
-          );
-
-          observer.unobserve(entry.target);
-        });
-      },
-      {
-        threshold: 0.12,
-        rootMargin: "0px 0px -40px 0px",
-      }
-    );
-
-    elements.forEach((element) => observer.observe(element));
-
-    return () => observer.disconnect();
-  }, [data]);
 
   return (
     <>
@@ -335,38 +292,38 @@ const Sustainability = () => {
           HERO — 100VH
       ================================================== */}
 
-      <section className="relative isolate min-h-screen overflow-hidden bg-slate-950">
+      <section className="relative isolate min-h-screen min-h-[100svh] overflow-hidden bg-slate-950">
         {/* Background image */}
         <img
           src={heroImg}
           alt="Sustainability at Innovation Plastic Cans Ltd."
-          className="absolute inset-0 h-full w-full object-cover"
+          className="absolute inset-0 h-full w-full object-cover object-[center_68%]"
+          fetchPriority="high"
+          decoding="async"
         />
 
         {/* Minimal dark overlay */}
-        <div className="absolute inset-0 bg-slate-950/55" />
-
         {/* Hero content */}
-        <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl items-center px-5 py-20 sm:px-8 lg:px-10">
+        <div className="relative z-10 mx-auto flex min-h-screen min-h-[100svh] max-w-7xl items-center px-5 pb-12 pt-28 sm:px-8 sm:pt-32 lg:px-10">
           <div className="max-w-2xl text-white">
 
             {/* Badge */}
-            <div className="sustainability-hero-badge mb-5 flex items-center gap-2 text-xs font-medium uppercase tracking-[0.22em] text-white/80">
+            <div className="sustainability-hero-badge mb-5 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-white [text-shadow:0_1px_5px_rgba(0,0,0,0.48)]">
               <span className="h-2 w-2 rounded-full bg-[#00A651]" />
 
               {data.hero.badge || "Sustainability"}
             </div>
 
             {/* Green line */}
-            <div className="sustainability-hero-line mb-5 h-[2px] bg-[#00A651]" />
+            <div className="sustainability-hero-line mb-5 h-1 w-12 rounded-full bg-[#00A651]" />
 
             {/* Title */}
-            <h1 className="sustainability-hero-title max-w-2xl text-4xl font-semibold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl xl:text-7xl">
+            <h1 className="sustainability-hero-title max-w-2xl text-4xl font-semibold leading-[1.08] tracking-tight [text-shadow:0_2px_8px_rgba(0,0,0,0.42)] sm:text-5xl lg:text-6xl">
               {data.hero.title}
             </h1>
 
             {/* Description */}
-            <p className="sustainability-hero-description mt-5 max-w-xl text-sm leading-7 text-white/80 sm:text-base lg:text-lg">
+            <p className="sustainability-hero-description mt-5 max-w-xl text-sm leading-7 text-white [text-shadow:0_1px_6px_rgba(0,0,0,0.46)] sm:text-base lg:text-lg">
               {data.hero.subtitle}
             </p>
 
@@ -381,14 +338,14 @@ const Sustainability = () => {
                     block: "start",
                   });
               }}
-              className="sustainability-hero-button mt-8 inline-flex items-center gap-2 text-sm font-medium text-white transition-colors duration-300 hover:text-[#00A651]"
+              className="sustainability-hero-button mt-8 inline-flex items-center gap-3 rounded-full border border-white/35 bg-white/10 px-5 py-3 text-sm font-semibold text-white backdrop-blur-md transition hover:border-white/60 hover:bg-white/15"
             >
               Explore our approach
 
               <ArrowDown
                 size={16}
                 strokeWidth={1.7}
-                className="sustainability-scroll-icon"
+                className="sustainability-scroll-icon text-[#00A651]"
               />
             </button>
           </div>
@@ -410,8 +367,7 @@ const Sustainability = () => {
 
         <section className="mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-24">
           <div
-            data-sustainability-reveal
-            className="mx-auto max-w-3xl translate-y-5 text-center opacity-0 transition-all duration-700 ease-out"
+            className="mx-auto max-w-3xl text-center"
           >
             <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#2E3192]">
               Our Commitment
@@ -438,8 +394,7 @@ const Sustainability = () => {
 
             {/* Section heading */}
             <div
-              data-sustainability-reveal
-              className="mb-10 translate-y-5 opacity-0 transition-all duration-700 ease-out"
+              className="mb-10"
             >
               <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#2E3192]">
                 Sustainability In Action
@@ -455,11 +410,7 @@ const Sustainability = () => {
               {data.initiatives?.map((item, index) => (
                 <article
                   key={item.id || `${item.title}-${index}`}
-                  data-sustainability-reveal
-                  className="group translate-y-5 rounded-2xl border border-slate-200 bg-white p-7 opacity-0 shadow-sm transition-all duration-700 ease-out hover:-translate-y-1 hover:border-[#2E3192]/20 hover:shadow-md"
-                  style={{
-                    transitionDelay: `${index * 100}ms`,
-                  }}
+                  className="group rounded-2xl border border-slate-200 bg-white p-7 shadow-[0_8px_28px_rgba(15,23,42,0.045)] transition duration-300 hover:-translate-y-1 hover:border-[#2E3192]/20 hover:shadow-[0_16px_38px_rgba(15,23,42,0.09)]"
                 >
                   <div className="flex items-start gap-5">
 
@@ -493,10 +444,7 @@ const Sustainability = () => {
           <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
 
             {/* Heading */}
-            <div
-              data-sustainability-reveal
-              className="translate-y-5 opacity-0 transition-all duration-700 ease-out"
-            >
+            <div>
               <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#2E3192]">
                 Our Approach
               </span>
@@ -512,10 +460,7 @@ const Sustainability = () => {
             </div>
 
             {/* Principles */}
-            <div
-              data-sustainability-reveal
-              className="translate-y-5 opacity-0 transition-all duration-700 ease-out"
-            >
+            <div>
               <div className="space-y-5">
 
                 {[
@@ -550,10 +495,7 @@ const Sustainability = () => {
         ================================================= */}
 
         <section className="border-t border-slate-100 bg-white">
-          <div
-            data-sustainability-reveal
-            className="mx-auto max-w-4xl translate-y-5 px-5 py-16 text-center opacity-0 transition-all duration-700 ease-out sm:px-8 sm:py-20"
-          >
+          <div className="mx-auto max-w-4xl px-5 py-16 text-center sm:px-8 sm:py-20">
             <Leaf
               className="mx-auto text-[#00A651]"
               size={30}
@@ -573,15 +515,6 @@ const Sustainability = () => {
         </section>
       </main>
 
-      {/* ==================================================
-          API STATUS
-      ================================================== */}
-
-      {isError && !isFetching && (
-        <div className="fixed bottom-4 right-4 z-50 rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs text-slate-500 shadow-lg">
-          Showing available sustainability information.
-        </div>
-      )}
     </>
   );
 };

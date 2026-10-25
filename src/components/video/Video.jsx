@@ -6,8 +6,8 @@ import Loading from "../loading/Loading";
 
 const Video = () => {
   const videoRef = useRef(null);
-  const fallbackTimerRef = useRef(null);
   const mountedRef = useRef(false);
+  const previousOverflowRef = useRef(null);
 
   const [showVideo, setShowVideo] = useState(true);
   const [videoReady, setVideoReady] = useState(false);
@@ -19,11 +19,6 @@ const Video = () => {
     if (!mountedRef.current) return;
 
     setShowVideo(false);
-
-    if (fallbackTimerRef.current) {
-      clearTimeout(fallbackTimerRef.current);
-      fallbackTimerRef.current = null;
-    }
 
     const video = videoRef.current;
 
@@ -41,41 +36,30 @@ const Video = () => {
   // =========================================================
   useEffect(() => {
     mountedRef.current = true;
-
-    const previousOverflow = document.body.style.overflow;
-
-    document.body.style.overflow = "hidden";
-
     return () => {
       mountedRef.current = false;
-
-      if (fallbackTimerRef.current) {
-        clearTimeout(fallbackTimerRef.current);
-        fallbackTimerRef.current = null;
-      }
-
-      document.body.style.overflow = previousOverflow;
     };
   }, []);
 
-  // =========================================================
-  // SAFETY FALLBACK
-  // =========================================================
   useEffect(() => {
-    if (!showVideo) return;
-
-    fallbackTimerRef.current = setTimeout(() => {
-      if (!mountedRef.current) return;
-
-      console.warn("Intro video timeout.");
-      closeVideo();
-    }, 4000);
+    if (showVideo) {
+      previousOverflowRef.current = {
+        body: document.body.style.overflow,
+        document: document.documentElement.style.overflow,
+      };
+      document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
+    } else if (previousOverflowRef.current) {
+      document.body.style.overflow = previousOverflowRef.current.body;
+      document.documentElement.style.overflow = previousOverflowRef.current.document;
+      previousOverflowRef.current = null;
+    }
 
     return () => {
-      if (fallbackTimerRef.current) {
-        clearTimeout(fallbackTimerRef.current);
-        fallbackTimerRef.current = null;
-      }
+      if (!previousOverflowRef.current) return;
+      document.body.style.overflow = previousOverflowRef.current.body;
+      document.documentElement.style.overflow = previousOverflowRef.current.document;
+      previousOverflowRef.current = null;
     };
   }, [showVideo]);
 
@@ -87,10 +71,6 @@ const Video = () => {
 
     setVideoReady(true);
 
-    if (fallbackTimerRef.current) {
-      clearTimeout(fallbackTimerRef.current);
-      fallbackTimerRef.current = null;
-    }
   };
 
   // =========================================================
@@ -203,7 +183,7 @@ const Video = () => {
             autoPlay
             muted
             playsInline
-            preload="metadata"
+            preload="auto"
             onCanPlay={handleCanPlay}
             onLoadedData={handleVideoReady}
             onEnded={handleVideoEnd}

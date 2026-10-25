@@ -1,0 +1,157 @@
+.auth-page {
+  background:
+    radial-gradient(ellipse at 12% 12%, rgba(0, 166, 81, 0.1), transparent 34%),
+    radial-gradient(ellipse at 88% 84%, rgba(46, 49, 146, 0.12), transparent 36%),
+    #eef1f6;
+}
+
+.auth-shell {
+  border: 1px solid rgba(255, 255, 255, 0.92);
+  background: #edf0f6;
+  box-shadow:
+    22px 22px 54px rgba(127, 139, 159, 0.24),
+    -18px -18px 46px rgba(255, 255, 255, 0.92),
+    inset 1px 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.auth-brand-panel {
+  isolation: isolate;
+  background: linear-gradient(145deg, #15194f 0%, #242878 55%, #1767a6 100%);
+}
+
+.auth-brand-orb {
+  position: absolute;
+  z-index: -1;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0.015));
+  box-shadow:
+    inset 1px 1px 0 rgba(255, 255, 255, 0.16),
+    18px 18px 45px rgba(8, 12, 50, 0.22);
+  backdrop-filter: blur(6px);
+}
+
+.auth-brand-orb-one {
+  top: 20%;
+  right: -155px;
+  width: 370px;
+  height: 370px;
+}
+
+.auth-brand-orb-two {
+  right: 18%;
+  bottom: -210px;
+  width: 320px;
+  height: 320px;
+  border-color: rgba(0, 166, 81, 0.25);
+}
+
+.auth-form-panel {
+  background: linear-gradient(145deg, rgba(248, 250, 253, 0.98), rgba(237, 240, 246, 0.98));
+}
+
+.auth-form-surface {
+  border: 1px solid rgba(255, 255, 255, 0.96);
+  background: linear-gradient(145deg, #f4f6fa, #e9edf4);
+  box-shadow:
+    12px 12px 26px rgba(143, 154, 174, 0.28),
+    -10px -10px 24px rgba(255, 255, 255, 0.96),
+    inset 1px 1px 0 rgba(255, 255, 255, 0.96);
+}
+
+.auth-form-surface label {
+  color: #374151;
+  font-weight: 600;
+}
+
+.auth-mobile-brand img:first-child {
+  filter: drop-shadow(3px 4px 6px rgba(46, 49, 146, 0.18));
+}
+
+.auth-form-panel input,
+.auth-form-panel textarea {
+  border: 1px solid rgba(255, 255, 255, 0.98);
+  border-radius: 12px;
+  background: linear-gradient(145deg, #edf0f6, #f7f9fc);
+  box-shadow:
+    inset 4px 4px 8px rgba(152, 163, 182, 0.2),
+    inset -4px -4px 8px rgba(255, 255, 255, 0.96);
+  transition: border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
+}
+
+.auth-form-panel input:focus,
+.auth-form-panel textarea:focus {
+  border-color: rgba(46, 49, 146, 0.42);
+  background: #f7f9fc;
+  box-shadow:
+    inset 2px 2px 5px rgba(152, 163, 182, 0.16),
+    inset -2px -2px 5px rgba(255, 255, 255, 0.96),
+    0 0 0 3px rgba(46, 49, 146, 0.08);
+}
+
+.auth-form-panel input::placeholder,
+.auth-form-panel textarea::placeholder {
+  color: #8b95a5;
+  opacity: 1;
+}
+
+.auth-submit-button {
+  border: 1px solid rgba(255, 255, 255, 0.36);
+  background: linear-gradient(145deg, #363b9d, #252879);
+  box-shadow:
+    7px 7px 14px rgba(126, 138, 160, 0.34),
+    -5px -5px 12px rgba(255, 255, 255, 0.88),
+    inset 1px 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+.auth-submit-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  filter: brightness(1.06);
+}
+
+.auth-submit-button:active:not(:disabled),
+.auth-google-button:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow:
+    inset 3px 3px 7px rgba(17, 21, 80, 0.24),
+    inset -2px -2px 5px rgba(255, 255, 255, 0.22);
+}
+
+.auth-google-button {
+  border-color: rgba(255, 255, 255, 0.98);
+  background: linear-gradient(145deg, #f7f9fc, #e9edf4);
+  box-shadow:
+    6px 6px 12px rgba(146, 157, 176, 0.26),
+    -5px -5px 12px rgba(255, 255, 255, 0.98),
+    inset 1px 1px 0 rgba(255, 255, 255, 0.98);
+}
+
+.auth-google-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  border-color: rgba(46, 49, 146, 0.22);
+  box-shadow:
+    8px 8px 16px rgba(146, 157, 176, 0.3),
+    -6px -6px 14px rgba(255, 255, 255, 1),
+    inset 1px 1px 0 #fff;
+}
+
+.auth-submit-button:focus-visible,
+.auth-google-button:focus-visible {
+  outline: 3px solid rgba(0, 166, 81, 0.78);
+  outline-offset: 3px;
+}
+
+@media (max-width: 1023px) {
+  .auth-shell {
+    max-width: 760px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-form-panel input,
+  .auth-form-panel textarea,
+  .auth-submit-button,
+  .auth-google-button {
+    transition-duration: 0.01ms !important;
+  }
+}

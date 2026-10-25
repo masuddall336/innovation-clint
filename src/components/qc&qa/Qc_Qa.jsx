@@ -30,23 +30,40 @@ const Qc_Qa = () => {
     return () => clearInterval(interval);
   }, [slides.length]);
 
-  // Scroll animation for every text element
+  // Reveal each content panel once as it enters the viewport.
   useEffect(() => {
-    const elements = document.querySelectorAll(".qcqa-unique-text, .qcqa-unique-text li");
-    const handleScroll = () => {
-      elements.forEach((el, index) => {
-        const rect = el.getBoundingClientRect();
-        if (rect.top < window.innerHeight - 0) {
-          setTimeout(() => {
-            el.classList.add("qcqa-unique-text-visible");
-          }, index * 100); // staggered animation
-        }
-      });
+    const section = document.getElementById("qcqa-unique-section");
+    const panels = section?.querySelectorAll(".qcqa-unique-block");
+
+    if (!section || !panels?.length || !("IntersectionObserver" in window)) return undefined;
+
+    section.classList.add("qcqa-reveal-ready");
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("qcqa-unique-text-visible");
+          observer.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -36px 0px" }
+    );
+
+    panels.forEach((panel) => observer.observe(panel));
+    return () => {
+      observer.disconnect();
+      section.classList.remove("qcqa-reveal-ready");
     };
-    window.addEventListener("scroll", handleScroll);
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (!isVideoOpen) return undefined;
+    const handleEscape = (event) => {
+      if (event.key === "Escape") setIsVideoOpen(false);
+    };
+    window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
+  }, [isVideoOpen]);
 
   return (
     <>
@@ -75,13 +92,9 @@ const Qc_Qa = () => {
 
           {/* Video Icon in Center */}
           <div id="qcqa-unique-carousel-video">
-            <img
-              src={videoIcon}
-              alt="Play Video"
-              title="Video Play Button"
-              className="qcqa-unique-video-icon pulse"
-              onClick={openVideo}
-            />
+            <button type="button" className="qcqa-unique-play-button" onClick={openVideo} aria-label="Play quality control video">
+              <img src={videoIcon} alt="" className="qcqa-unique-video-icon pulse" />
+            </button>
           </div>
         </div>
 

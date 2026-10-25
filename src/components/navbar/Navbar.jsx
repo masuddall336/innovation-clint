@@ -453,6 +453,7 @@ const Navbar = () => {
           xl:flex
           items-center
           justify-center
+          min-w-0
           flex-1
           h-full
           px-2
@@ -468,13 +469,15 @@ const Navbar = () => {
               className={`
                 relative
                 flex
+                shrink-0
                 items-center
                 justify-center
-                px-4
-                xl:px-5
+                px-3
+                xl:px-3
                 py-3
                 text-[14px]
                 font-semibold
+                whitespace-nowrap
                 transition-all
                 duration-200
                 ${
@@ -538,14 +541,16 @@ const Navbar = () => {
             aria-expanded={aboutMenu}
             className={`
               relative
+              shrink-0
               flex
               items-center
               gap-1.5
-              px-4
-              xl:px-5
+              px-3
+              xl:px-3
               py-3
               text-[14px]
               font-semibold
+              whitespace-nowrap
               transition-all
               duration-300
               cursor-pointer
@@ -614,24 +619,29 @@ const Navbar = () => {
                   left-1/2
                   -translate-x-1/2
                   z-[9999]
-                  w-[220px]
-                  pt-0
+                  w-[248px]
+                  pt-3
                 "
               >
                 <div
                   className="
-                    relative
                     w-full
                     overflow-hidden
-                    rounded-b-lg
+                    rounded-2xl
                     border
-                    border-t-0
-                    border-white/70
-                    bg-[#575656b5]
-                    shadow-[0_12px_30px_rgba(15,23,42,0.12)]
+                    border-white/80
+                    bg-white/95
+                    p-2
+                    shadow-[0_22px_55px_rgba(15,23,42,0.24)]
                     backdrop-blur-2xl
+                    backdrop-saturate-150
+                    ring-1
+                    ring-slate-900/5
                   "
                 >
+                  <div className="px-3 pb-2 pt-1 text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
+                    Explore
+                  </div>
                   {aboutItems.map((item) => {
                     const active = isActive(item.path);
 
@@ -644,18 +654,17 @@ const Navbar = () => {
                           flex
                           items-center
                           justify-between
-                          px-3.5
-                          py-2.5
-                          text-[13px]
-                          font-medium
-                          rounded-md
-                          transition-all
-                          duration-300
-                          ease-out
+                          rounded-xl
+                          px-3
+                          py-3
+                          text-sm
+                          font-semibold
+                          transition-colors
+                          duration-200
                           ${
                             active
-                              ? "bg-white text-[#2E3192] font-semibold shadow-[0_4px_14px_rgba(0,0,0,0.10)]"
-                              : "text-white hover:bg-[#f9f9f95f] hover:text-[#2E3192] hover:shadow-[0_4px_14px_rgba(0,0,0,0.10)] hover:-translate-y-[1px]"
+                              ? "bg-[#2E3192] text-white shadow-[0_5px_14px_rgba(46,49,146,0.2)]"
+                              : "text-slate-700 hover:bg-slate-100 hover:text-[#2E3192]"
                           }
                         `}
                       >
@@ -676,14 +685,13 @@ const Navbar = () => {
 
                         <ChevronRight
                           size={15}
-                          className="
+                          className={`
                             text-[#2E3192]/55
-                            opacity-50
                             transition-transform
                             duration-200
                             group-hover:translate-x-1
-                            group-hover:text-[#00A651]
-                          "
+                            ${active ? "text-white/75" : "group-hover:text-[#00A651]"}
+                          `}
                         />
                       </Link>
                     );
@@ -700,13 +708,15 @@ const Navbar = () => {
           className={`
             relative
             flex
+            shrink-0
             items-center
             justify-center
-            px-4
-            xl:px-5
+            px-3
+            xl:px-3
             py-3
             text-[14px]
             font-semibold
+            whitespace-nowrap
             transition-all
             duration-200
             ${
@@ -755,7 +765,7 @@ const Navbar = () => {
           href="tel:+880"
           className="
             hidden
-            xl:flex
+            2xl:flex
             items-center
             gap-2
             px-3
@@ -1917,13 +1927,19 @@ const Navbar = () => {
               z-[10000]
 
               flex
-              items-center
+              items-start
               justify-center
 
-              p-4
+              overflow-y-auto
+              px-3
+              pb-4
+              pt-[88px]
+              sm:px-5
+              sm:pt-28
+              xl:pt-[144px]
 
-              bg-slate-950/55
-              backdrop-blur-sm
+              bg-slate-950/40
+              backdrop-blur-lg
             "
             onClick={() => setMapOpen(false)}
           >
@@ -1950,15 +1966,19 @@ const Navbar = () => {
               className="
                 relative
                 w-full
-                max-w-[1000px]
-                h-[min(700px,85vh)]
+                max-w-[760px]
+                h-[min(560px,calc(100dvh-112px))]
+                xl:h-[min(560px,calc(100dvh-160px))]
+                max-h-full
 
                 overflow-hidden
 
-                rounded-2xl
-                bg-white
-
-                shadow-[0_30px_100px_rgba(15,23,42,0.25)]
+                rounded-[26px]
+                border border-white/85
+                bg-white/35
+                backdrop-blur-3xl
+                backdrop-saturate-[180%]
+                shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_24px_70px_rgba(15,23,42,0.32)]
               "
             >
               {/* Modal Header */}
@@ -1975,20 +1995,21 @@ const Navbar = () => {
                   items-center
                   justify-between
 
-                  px-5
-                  py-4
+                  px-4
+                  py-3
 
-                  bg-white/95
-                  backdrop-blur-xl
+                  bg-white/55
+                  backdrop-blur-2xl
+                  backdrop-saturate-[180%]
 
                   border-b
-                  border-slate-100
+                  border-white/70
                 "
               >
                 <div>
                   <h3
                     className="
-                      text-lg
+                      text-base
                       font-bold
                       text-[#2E3192]
                     "
@@ -2009,15 +2030,17 @@ const Navbar = () => {
                     items-center
                     justify-center
 
-                    w-10
-                    h-10
+                    w-9
+                    h-9
 
                     rounded-xl
 
-                    bg-slate-100
+                    border border-white/80
+                    bg-white/55
                     text-slate-700
+                    shadow-[inset_1px_1px_0_rgba(255,255,255,0.9),3px_3px_8px_rgba(15,23,42,0.12)]
 
-                    hover:bg-slate-200
+                    hover:bg-white/85
                     transition-colors
                   "
                   aria-label="Close location"
@@ -2028,7 +2051,7 @@ const Navbar = () => {
 
               {/* Map */}
 
-              <div className="w-full h-full pt-[73px]">
+              <div className="h-full w-full pt-[64px]">
                 <Contact_map />
               </div>
             </motion.div>

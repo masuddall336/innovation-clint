@@ -1,7 +1,6 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import logo from "../../../public/logo/IPCL_logo.png";
 
 const Loading = () => {
   const dots = Array.from({ length: 8 });
@@ -135,7 +134,7 @@ const Loading = () => {
             "
           >
             <img
-              src={logo}
+              src="/logo/IPCL_logo.png"
               alt="Innovation Plastic Cans"
               className="
                 h-12

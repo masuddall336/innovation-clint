@@ -1,5 +1,5 @@
 import { Helmet } from "react-helmet-async";
-import { FaEdit, FaTrash } from "react-icons/fa";
+import { FaArrowRight, FaEdit, FaTrash } from "react-icons/fa";
 import { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../../firebase/AuthContext";
 import "./DisplayProducts.css";
@@ -36,59 +36,83 @@ export default function DisplayProducts({ product, handleDelete }) {
 
       <motion.div
         id={_id}
-        className="pack-card bg-red rounded-lg text-[#737373b9] cursor-pointer w-full overflow-hidden"
+        className="pack-card w-full cursor-pointer overflow-hidden text-slate-600"
+        role="button"
+        tabIndex={0}
+        aria-label={`View details for ${name}`}
+        onClick={(event) => {
+          if (event.target.closest("a, button")) return;
+          setIsOpen(true);
+        }}
+        onKeyDown={(event) => {
+          if (event.target !== event.currentTarget) return;
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            setIsOpen(true);
+          }
+        }}
         variants={cardVariants}
         initial="hidden"
         animate={visible ? "visible" : "hidden"}
         whileHover={{
-          y: -8,
+          y: -5,
           scale: 1,
-          boxShadow: "10px 10px 15px 1px #737373b9",
           transition: {
-            y: { type: "spring", stiffness: 150, damping: 3 },
-            scale: { type: "spring", stiffness: 150, damping: 3 },
-            boxShadow: { type: "tween", duration: 0.1 },
+            y: { type: "spring", stiffness: 220, damping: 18 },
+            scale: { type: "spring", stiffness: 220, damping: 18 },
           },
         }}
       >
-        <div className="card-image h-60 sm:h-64 md:h-72 lg:h-60 cursor-auto">
-          <div className="relative h-full overflow-hidden rounded-t-xs">
+        <div className="card-image h-60 sm:h-64 md:h-72 lg:h-60">
+          <div className="relative h-full overflow-hidden rounded-2xl">
             <img
               src={img_url}
               alt={name}
               className="absolute inset-0 w-full h-full object-cover object-bottom"
             />
-            <div className="absolute inset-0 flex items-center justify-center  opacity-100 sm:opacity-0 hover:sm:opacity-100 transition-opacity duration-300 z-10">
-              <button
-                className="border bg-[#77767665] text-white px-3 cursor-pointer py-1 rounded-lg font-bold shadow"
-                onClick={() => setIsOpen(true)}
-              >
-                Quick View
-              </button>
-            </div>
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950/15 via-transparent to-white/10" />
           </div>
         </div>
 
-        <div className="space-y-1 bg-white p-2.5 rounded-b-lg cursor-auto">
-          <h4 className="text-[#3b4042] font-bold text-base">{name}</h4>
-          <p className="text-sm font-medium text-[#7e7e7e] line-clamp-2">{description}</p>
+        <div className="product-card-content space-y-1.5 p-3.5">
+          <h4 className="text-slate-800 font-bold text-base">{name}</h4>
+          <p className="text-sm font-medium text-slate-600 line-clamp-2">{description}</p>
 
-          {user && (
-            <div className="flex gap-2 justify-end mt-2">
-              <Link to={`/edit-product/${_id}`}>
-                <button className="border cursor-pointer px-2 py-1 rounded flex items-center gap-1 hover:bg-gray-100 text-sm">
-                  <FaEdit /> Edit
+          <div className="product-card-footer mt-3 flex flex-wrap items-center justify-between gap-2">
+            {user && (
+              <div className="flex flex-wrap gap-2">
+                <Link to={`/edit-product/${_id}`} onClick={(event) => event.stopPropagation()}>
+                  <button className="product-card-action cursor-pointer px-2.5 py-1.5 rounded-lg flex items-center gap-1.5 text-sm">
+                    <FaEdit /> Edit
+                  </button>
+                </Link>
+
+                <button
+                  type="button"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    handleDelete(_id, title);
+                  }}
+                  className="product-card-delete text-white px-2.5 py-1.5 cursor-pointer rounded-lg flex items-center gap-1.5 text-sm"
+                >
+                  <FaTrash /> Delete
                 </button>
-              </Link>
-
-              <button
-                onClick={() => handleDelete(_id, title)}
-                className="bg-red-500 text-white px-2 py-1 cursor-pointer rounded flex items-center gap-1 hover:bg-red-600 text-sm"
-              >
-                <FaTrash /> Delete
-              </button>
-            </div>
-          )}
+              </div>
+            )}
+            <button
+              type="button"
+              onClick={(event) => {
+                event.stopPropagation();
+                setIsOpen(true);
+              }}
+              className="product-card-view ml-auto inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold"
+            >
+              View details
+              <span className="product-card-view-icon">
+                <FaArrowRight aria-hidden="true" />
+              </span>
+            </button>
+          </div>
         </div>
       </motion.div>
 

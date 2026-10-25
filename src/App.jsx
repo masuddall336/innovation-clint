@@ -1,6 +1,5 @@
 
 import './App.css'
-import Navbar from './components/navbar/Navbar'
 import Carousel from './components/carousel/Carousel'
 import MissionVision from './components/mi&vi/Misionvision'
 import Aboutus from './components/aboutus/Aboutus'
@@ -22,7 +21,6 @@ function App() {
       </Helmet>
       <div>
         <ScrollTop></ScrollTop>
-        <Navbar></Navbar>
         <Carousel></Carousel>
         <Aboutus></Aboutus>
         <ProductsScrolling></ProductsScrolling>

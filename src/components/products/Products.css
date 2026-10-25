@@ -2,6 +2,29 @@
     padding: 0;
 
 }
+
+.product-filter-scroll {
+    overscroll-behavior: contain;
+    scrollbar-color: rgba(46, 49, 146, 0.24) transparent;
+    scrollbar-width: thin;
+}
+
+.product-filter-scroll::-webkit-scrollbar {
+    width: 4px;
+}
+
+.product-filter-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.product-filter-scroll::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: rgba(46, 49, 146, 0.24);
+}
+
+.product-filter-scroll::-webkit-scrollbar-thumb:hover {
+    background: rgba(46, 49, 146, 0.48);
+}
 @keyframes bgTextShift {
 
     0%,

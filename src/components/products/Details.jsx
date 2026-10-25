@@ -1,168 +1,193 @@
 import React, { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { ArrowLeft, ArrowRight, Expand, X } from "lucide-react";
+import { Link } from "react-router-dom";
 import Loading from "../loading/Loading";
+import "./ProductPage.css";
 
 const Details = ({ product }) => {
-  const images = [product?.img_url, ...(product?.thumbnail_url || [])];
-
+  const thumbnails = [
+    ...new Set([
+      product?.img_url,
+      ...(Array.isArray(product?.thumbnail_url) ? product.thumbnail_url : []),
+    ].filter(Boolean)),
+  ];
   const [activeIndex, setActiveIndex] = useState(0);
   const [lightbox, setLightbox] = useState(false);
+  const title = product?.title || product?.name || "Product details";
 
   useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
-
-    if (product) {
-      setActiveIndex(0);
-    }
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    setActiveIndex(0);
   }, [product]);
 
-  // Keyboard support
   useEffect(() => {
-    const handleKey = (e) => {
-      if (!lightbox) return;
-      if (e.key === "ArrowRight") nextImage();
-      if (e.key === "ArrowLeft") prevImage();
-      if (e.key === "Escape") setLightbox(false);
+    if (!lightbox) return undefined;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const handleKey = (event) => {
+      if (event.key === "Escape") setLightbox(false);
+      if (event.key === "ArrowRight") setActiveIndex((index) => (index + 1) % thumbnails.length);
+      if (event.key === "ArrowLeft") setActiveIndex((index) => (index - 1 + thumbnails.length) % thumbnails.length);
     };
+
     window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
-  }, [lightbox, activeIndex]);
-
-  const changeImage = (index) => {
-    if (index === activeIndex) return;
-    const preload = new Image();
-    preload.src = images[index];
-    preload.onload = () => {
-      setActiveIndex(index);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKey);
     };
-  };
-
-  const nextImage = () => {
-    const newIndex = (activeIndex + 1) % images.length;
-    changeImage(newIndex);
-  };
-
-  const prevImage = () => {
-    const newIndex = (activeIndex - 1 + images.length) % images.length;
-    changeImage(newIndex);
-  };
+  }, [lightbox, thumbnails.length]);
 
   if (!product) return <Loading />;
 
-  // Motion variants for text animation
-  const containerVariants = {
-    hidden: {},
-    visible: {
-      transition: {
-        staggerChildren: 0.15,
-      },
-    },
-  };
+  const activeImage = thumbnails[activeIndex] || product.img_url;
+  const specifications = [
+    ["Category", product.category],
+    ["Capacity", product.capacity],
+    ["Material", product.material],
+  ].filter(([, value]) => value);
 
-  const itemVariants = {
-    hidden: { opacity: 0, x: 20 },
-    visible: { opacity: 1, x: 0, transition: { duration: 0.5 } },
+  const moveImage = (direction) => {
+    setActiveIndex((index) => (index + direction + thumbnails.length) % thumbnails.length);
   };
 
   return (
-    <div className="max-w-[92%] mx-auto px-4 py-4">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <div className="product-page min-h-screen bg-[#edf0f6] pb-16">
+      <section className="product-page-banner relative isolate h-[220px] overflow-hidden sm:h-[260px] lg:h-[300px]" aria-label="Product collection banner">
+        <img
+          src="/img/Product_Details_section_banner.png"
+          alt="Plastic packaging products at our manufacturing facility"
+          className="absolute inset-0 h-full w-full object-cover object-center"
+          fetchPriority="high"
+          decoding="async"
+        />
+      </section>
 
-        {/* LEFT SIDE */}
-        <div>
-
-          {/* MAIN IMAGE */}
-          <div className="relative rounded-2xl overflow-hidden shadow-lg group bg-gray-100 w-full">
-            <img
-              key={images[activeIndex]}
-              src={images[activeIndex]}
-              alt="product"
-              onClick={() => setLightbox(true)}
-              className="w-full max-h-[300px] md:max-h-[350px] object-contain cursor-zoom-in transition-transform duration-300 group-hover:scale-105"
-            />
-          </div>
-
-          {/* THUMBNAILS */}
-          <div className="flex gap-2 overflow-x-auto pb-2 mt-3">
-            {images.map((img, i) => (
-              <img
-                key={i}
-                src={img}
-                onClick={() => changeImage(i)}
-                className={`flex-shrink-0 cursor-pointer rounded-xl h-20 w-20 object-cover border-2 transition duration-200 hover:scale-105 ${activeIndex === i ? "border-amber-50 scale-105" : "border-transparent"
-                  }`}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* RIGHT SIDE */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="space-y-3"
-        >
-          <motion.h2
-            variants={itemVariants}
-            className="text-4xl font-[900] tracking-tight font-poppins bg-gradient-to-r from-green-500 to-[#2E3192] bg-clip-text text-transparent mb-3"
+      <main className="mx-auto mt-6 grid w-full max-w-7xl gap-6 px-4 sm:mt-8 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:gap-8 lg:px-10">
+        <section className="product-page-panel rounded-[26px] p-4 sm:p-6" aria-label="Product images">
+          <button
+            type="button"
+            className="product-page-image group relative flex h-[320px] w-full items-center justify-center overflow-hidden rounded-2xl p-5 sm:h-[440px] lg:h-[520px]"
+            onClick={() => thumbnails.length && setLightbox(true)}
+            aria-label="Expand product image"
           >
-            {product.title}
-          </motion.h2>
+            {activeImage ? (
+              <img
+                key={activeImage}
+                src={activeImage}
+                alt={title}
+                className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-[1.025]"
+              />
+            ) : (
+              <span className="text-sm text-slate-400">Product image unavailable</span>
+            )}
+            {thumbnails.length > 0 && (
+              <span className="product-page-expand absolute bottom-3 right-3 flex h-10 w-10 items-center justify-center rounded-full text-[#2E3192]">
+                <Expand size={17} aria-hidden="true" />
+              </span>
+            )}
+          </button>
 
-          <motion.p variants={itemVariants}><b>Category:</b> {product.category || "Category not found"}</motion.p>
-          <motion.p variants={itemVariants}><b>Capacity:</b> {product.capacity || "Capacity not found"}</motion.p>
-          <motion.p variants={itemVariants}><b>Material:</b> {product.material || "Material not found"}</motion.p>
-          <motion.p variants={itemVariants}><b>Usage:</b> {product.usages || "Not Uses Found"}</motion.p>
-          <motion.p variants={itemVariants}><b>Additional Info:</b> {product.additional_info || "Information not found"}</motion.p>
-          <motion.p variants={itemVariants}><b>Description:</b> {product.description}</motion.p>
-        </motion.div>
-      </div>
+          {thumbnails.length > 1 && (
+            <div className="product-page-thumbnails mt-5 flex gap-3 overflow-x-auto pb-1">
+              {thumbnails.map((image, index) => (
+                <button
+                  key={image}
+                  type="button"
+                  onClick={() => setActiveIndex(index)}
+                  className={`product-page-thumbnail h-[74px] w-[74px] shrink-0 overflow-hidden rounded-xl p-1 transition ${activeIndex === index ? "product-page-thumbnail-active" : "opacity-75 hover:opacity-100"}`}
+                  aria-label={`Show product image ${index + 1}`}
+                  aria-pressed={activeIndex === index}
+                >
+                  <img src={image} alt="" className="h-full w-full rounded-lg object-cover" />
+                </button>
+              ))}
+            </div>
+          )}
+        </section>
 
-      {/* LIGHTBOX */}
+        <section className="product-page-panel flex flex-col rounded-[26px] p-5 sm:p-7 lg:p-8" aria-label="Product specifications">
+          <div className="mb-6">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#00A651]">Product details</p>
+            <h2 className="mt-2 text-2xl font-bold leading-tight tracking-tight text-slate-900 sm:text-3xl">{title}</h2>
+            {product.description && (
+              <p className="mt-4 text-sm leading-7 text-slate-600 sm:text-base">{product.description}</p>
+            )}
+          </div>
+
+          {specifications.length > 0 && (
+            <div className="grid gap-3 sm:grid-cols-2">
+              {specifications.map(([label, value]) => (
+                <div className="product-page-spec rounded-2xl px-4 py-3.5" key={label}>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">{label}</p>
+                  <p className="mt-1.5 text-sm font-semibold text-slate-800">{value}</p>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {(product.usages || product.additional_info) && (
+            <div className="mt-6 space-y-4 border-t border-white/90 pt-5">
+              {product.usages && (
+                <div>
+                  <h3 className="text-sm font-semibold text-slate-900">Typical use</h3>
+                  <p className="mt-1.5 whitespace-pre-line text-sm leading-6 text-slate-600">{product.usages}</p>
+                </div>
+              )}
+              {product.additional_info && (
+                <div>
+                  <h3 className="text-sm font-semibold text-slate-900">Additional information</h3>
+                  <p className="mt-1.5 whitespace-pre-line text-sm leading-6 text-slate-600">{product.additional_info}</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          <div className="mt-auto flex flex-col gap-3 pt-7 sm:flex-row">
+            <Link to="/contact-us" className="product-page-button inline-flex min-h-12 flex-1 items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-bold">
+              Contact us <ArrowRight size={16} aria-hidden="true" />
+            </Link>
+            <Link to="/products" className="product-page-secondary inline-flex min-h-12 items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold">
+              <ArrowLeft size={16} aria-hidden="true" /> Browse products
+            </Link>
+          </div>
+        </section>
+      </main>
+
       <AnimatePresence>
-        {lightbox && (
+        {lightbox && activeImage && (
           <motion.div
-            className="fixed inset-0 bg-black/80 flex items-center justify-center z-50"
+            className="fixed inset-0 z-[10020] flex items-center justify-center bg-slate-950/90 p-4 backdrop-blur-md"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setLightbox(false)}
+            role="presentation"
           >
-
-            {/* LEFT ARROW */}
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                prevImage();
-              }}
-              className="absolute left-5 text-white text-4xl bg-black/40 cursor-pointer px-1 py-1 rounded-full hover:bg-black"
-            >
-              ←
+            <button type="button" onClick={() => setLightbox(false)} className="product-page-lightbox-control absolute right-4 top-4 flex h-11 w-11 items-center justify-center rounded-full text-white" aria-label="Close image viewer">
+              <X size={20} />
             </button>
-
-            {/* IMAGE */}
+            {thumbnails.length > 1 && (
+              <button type="button" onClick={(event) => { event.stopPropagation(); moveImage(-1); }} className="product-page-lightbox-control absolute left-4 flex h-12 w-12 items-center justify-center rounded-full text-white sm:left-8" aria-label="Previous image">
+                <ArrowLeft size={20} />
+              </button>
+            )}
             <motion.img
-              key={images[activeIndex]}
-              src={images[activeIndex]}
-              className="max-h-[90%] max-w-[90%] rounded-xl"
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={(e) => e.stopPropagation()}
+              key={activeImage}
+              src={activeImage}
+              alt={title}
+              className="max-h-[86vh] max-w-[88vw] rounded-2xl object-contain shadow-2xl"
+              initial={{ opacity: 0, scale: 0.97 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              onClick={(event) => event.stopPropagation()}
             />
-
-            {/* RIGHT ARROW */}
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                nextImage();
-              }}
-              className="absolute right-5 text-white text-4xl bg-black/40 px-1 py-1 rounded-full cursor-pointer hover:bg-black"
-            >
-              →
-            </button>
-
+            {thumbnails.length > 1 && (
+              <button type="button" onClick={(event) => { event.stopPropagation(); moveImage(1); }} className="product-page-lightbox-control absolute right-4 flex h-12 w-12 items-center justify-center rounded-full text-white sm:right-8" aria-label="Next image">
+                <ArrowRight size={20} />
+              </button>
+            )}
           </motion.div>
         )}
       </AnimatePresence>

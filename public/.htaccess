@@ -1,0 +1,21 @@
+Options -MultiViews
+DirectoryIndex index.html
+
+<IfModule mod_mime.c>
+  AddType application/javascript .js .mjs
+  AddType text/css .css
+  AddType application/wasm .wasm
+</IfModule>
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # Keep built assets as real files; never serve the SPA HTML for missing JS/CSS.
+  RewriteRule ^assets/ - [L]
+
+  # Serve existing files and folders directly, then route client-side URLs to Vite's entry page.
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+  RewriteRule ^ index.html [L]
+</IfModule>
