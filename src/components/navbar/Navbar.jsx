@@ -335,6 +335,7 @@ const Navbar = () => {
 
         {/* Logo */}
         <motion.div
+          className="site-navbar-logo flex items-center justify-center h-[46px] w-[46px] sm:h-[58px] sm:w-[58px] lg:h-[68px] lg:w-[68px] xl:h-[72px] xl:w-[100px] shrink-0"
           initial={{
             opacity: 0,
             x: -10,
@@ -347,20 +348,6 @@ const Navbar = () => {
             duration: 0.5,
             ease: "easeOut",
           }}
-          className="
-            flex
-            items-center
-            justify-center
-            h-[46px]
-            w-[46px]
-            sm:h-[58px]
-            sm:w-[58px]
-            lg:h-[68px]
-            lg:w-[68px]
-            xl:h-[72px]
-            xl:w-[100px]
-            shrink-0
-          "
         >
           <img
             src={logo}
@@ -760,32 +747,34 @@ const Navbar = () => {
           lg:pr-4
         "
       >
-        {/* Call Us */}
         <a
           href="tel:+880"
           className="
             hidden
-            2xl:flex
+            sm:flex
             items-center
-            gap-2
-            px-3
-            py-2
-            rounded-lg
+            justify-center
+            w-8
+            h-8
+            lg:w-10
+            lg:h-10
+            rounded-full
+            bg-gradient-to-br
+            from-[#00A651]
+            to-[#008B43]
+            border
+            border-white
             text-white
-            hover:text-[#2E3192]
-            transition-colors
-            [text-shadow:0_1px_3px_rgba(15,23,42,0.45)]
+            shadow-[0_5px_14px_rgba(0,166,81,0.22)]
+            hover:-translate-y-0.5
+            hover:scale-105
+            hover:shadow-[0_7px_18px_rgba(0,166,81,0.32)]
+            transition-all
+            duration-200
           "
+          aria-label="Call Innovation Plastic Cans"
         >
-          <Phone
-            size={15}
-            strokeWidth={2}
-            className="text-white"
-          />
-
-          <span className="text-xs font-semibold whitespace-nowrap">
-            Call Us
-          </span>
+          <Phone size={17} strokeWidth={2.2} />
         </a>
 
         {/* Location */}
@@ -1134,7 +1123,7 @@ const Navbar = () => {
             "
           >
             <div
-              className="
+              className="site-navbar-logo
                 flex
                 items-center
                 justify-center
@@ -1634,85 +1623,6 @@ const Navbar = () => {
 
             <span>Our Location</span>
           </button>
-
-          {/* ==================================================
-              CALL
-          ================================================== */}
-          <a
-            href="tel:+880"
-            className="
-              group
-
-              mt-2
-
-              w-full
-
-              flex
-              items-center
-              gap-3
-
-              px-3.5
-              py-3
-
-              sm:px-4
-              sm:py-3.5
-
-              rounded-xl
-
-              bg-white/30
-              backdrop-blur-xl
-
-              border
-              border-white/70
-
-              text-slate-700
-              text-sm
-              font-semibold
-
-              shadow-[0_5px_18px_rgba(15,23,42,0.04)]
-
-              hover:bg-white/55
-              hover:border-white/90
-              hover:text-[#2E3192]
-
-              transition-all
-              duration-200
-            "
-          >
-            <span
-              className="
-                flex
-                items-center
-                justify-center
-
-                w-8
-                h-8
-
-                sm:w-9
-                sm:h-9
-
-                rounded-lg
-
-                bg-white/65
-                backdrop-blur-xl
-
-                border
-                border-white/80
-
-                text-[#00A651]
-
-                shadow-sm
-
-                group-hover:scale-105
-
-                transition-transform
-              "
-            >
-              <Phone size={16} />
-            </span>
-
-            <span>Call Us</span>
-          </a>
 
           {/* ==================================================
               CONTACT

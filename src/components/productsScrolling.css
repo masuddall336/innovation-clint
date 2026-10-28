@@ -3,6 +3,7 @@
   overflow:hidden;
   position:relative;
   padding: 15px 0px;
+  background-color: #fff;
   /* border: 1px dashed green; */
 }
 
@@ -47,6 +48,7 @@
   height:80px;
   width:auto;
   display:block;
+  filter: invert(1);
 }
 
 /* seamless infinite animation */

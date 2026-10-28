@@ -61,8 +61,13 @@ const Qc_Qa = () => {
     const handleEscape = (event) => {
       if (event.key === "Escape") setIsVideoOpen(false);
     };
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
     window.addEventListener("keydown", handleEscape);
-    return () => window.removeEventListener("keydown", handleEscape);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleEscape);
+    };
   }, [isVideoOpen]);
 
   return (
@@ -100,12 +105,12 @@ const Qc_Qa = () => {
 
         {/* Video Modal */}
         {isVideoOpen && (
-          <div className="qcqa-unique-video-modal show" onClick={closeVideo}>
-            <div className="qcqa-unique-video-wrapper" onClick={(e) => e.stopPropagation()}>
+          <div className="qcqa-unique-video-modal show" onClick={closeVideo} role="presentation">
+            <div className="qcqa-unique-video-wrapper" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-label="QC and QA quality control video">
               <video controls autoPlay>
                 <source src={sampleVideo} type="video/mp4" />
               </video>
-              <button className="qcqa-unique-close-video" onClick={closeVideo}>✕</button>
+              <button className="qcqa-unique-close-video" onClick={closeVideo} type="button" aria-label="Close video">✕</button>
             </div>
           </div>
         )}

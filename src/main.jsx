@@ -12,6 +12,15 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 const API_URL = import.meta.env.VITE_API_URL;
 
+const loadProductWithMinimumTime = async (url) => {
+  const [response] = await Promise.all([
+    fetch(url),
+    new Promise((resolve) => window.setTimeout(resolve, 2000)),
+  ]);
+  if (!response.ok) throw new Error(`Product request failed (${response.status})`);
+  return response.json();
+};
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -82,18 +91,12 @@ let router = createBrowserRouter([
       },
       {
         path: '/products/:id',
-        loader: async ({ params }) => {
-          const res = await fetch(`${API_URL}/products/${params.id}`);
-          return res.json();
-        },
+        loader: ({ params }) => loadProductWithMinimumTime(`${API_URL}/products/${params.id}`),
         Component: LoadData
       },
       {
         path: '/edit-product/:id',
-        loader: async ({ params }) => {
-          const res = await fetch(`${API_URL}/products/${params.id}`);
-          return res.json();
-        },
+        loader: ({ params }) => loadProductWithMinimumTime(`${API_URL}/products/${params.id}`),
         Component: UpdateProductForm
       },
       {

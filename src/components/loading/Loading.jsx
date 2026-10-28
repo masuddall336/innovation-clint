@@ -1,37 +1,191 @@
 
+"use client";
+
+import { useEffect } from "react";
+
+let openLoaderCount = 0;
+let previousBodyOverflow = "";
+let previousHtmlOverflow = "";
+
 const Loading = () => {
+  useEffect(() => {
+    if (openLoaderCount === 0) {
+      previousBodyOverflow = document.body.style.overflow;
+      previousHtmlOverflow = document.documentElement.style.overflow;
+
+      document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
+    }
+
+    openLoaderCount += 1;
+
+    return () => {
+      openLoaderCount = Math.max(0, openLoaderCount - 1);
+
+      if (openLoaderCount === 0) {
+        document.body.style.overflow = previousBodyOverflow;
+        document.documentElement.style.overflow =
+          previousHtmlOverflow;
+      }
+    };
+  }, []);
+
   return (
     <div
-      className="fixed inset-0 z-99999 flex min-h-screen items-center justify-center overflow-hidden bg-[#07111f] px-6 py-16"
+      className="site-loader"
       role="status"
       aria-live="polite"
-      aria-label="Preparing introduction"
+      aria-label="Loading"
     >
-      <div className="flex flex-col items-center gap-5 text-center">
-        <div className="relative flex h-[76px] w-[76px] items-center justify-center">
-          <span className="absolute inset-0 animate-spin rounded-full border-2 border-white/15 border-t-[#00AEEF] shadow-[0_0_24px_rgba(0,174,239,0.2)] motion-reduce:animate-none" />
-          <span className="absolute inset-2 animate-[spin_2.4s_linear_infinite_reverse] rounded-full border border-white/10 motion-reduce:animate-none">
-            <span className="absolute -top-1 left-1/2 h-2 w-2 -translate-x-1/2 rounded-full bg-[#00AEEF] shadow-[0_0_12px_3px_rgba(0,174,239,0.8)]" />
-          </span>
+      <style>{`
+        .site-loader {
+          position: fixed;
+          inset: 0;
+          z-index: 99998;
+          display: grid;
+          place-items: center;
+          min-height: 100vh;
+          min-height: 100dvh;
+          overflow: hidden;
+          background: radial-gradient(circle at center, #17304a 0%, #0b1d32 58%, #061424 100%);
+          animation: site-loader-enter 0.25s ease-out both;
+        }
+
+        .site-loader__content {
+          position: relative;
+          width: 150px;
+          height: 150px;
+          display: grid;
+          place-items: center;
+        }
+
+        .site-loader__orbit {
+          position: absolute;
+          inset: 0;
+          border-radius: 50%;
+          animation: site-loader-spin 1.8s linear infinite;
+        }
+
+        .site-loader__dot {
+          --dot-size: 5px;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: var(--dot-size);
+          height: var(--dot-size);
+          margin: calc(var(--dot-size) / -2);
+          border-radius: 50%;
+          background: rgba(255, 255, 255, 0.24);
+          transform: rotate(var(--dot-angle)) translateX(68px);
+        }
+
+        .site-loader__dot:nth-child(3n + 1) {
+          background: rgba(255, 255, 255, 0.92);
+          box-shadow: 0 0 7px rgba(255, 255, 255, 0.65);
+        }
+
+        .site-loader__dot:nth-child(3n + 2) {
+          background: #00AEEF;
+          box-shadow: 0 0 8px rgba(0, 174, 239, 0.8);
+        }
+
+        .site-loader__dot:nth-child(12) {
+          width: 7px;
+          height: 7px;
+          margin: -3.5px;
+          background: #00A651;
+          box-shadow: 0 0 9px rgba(0, 166, 81, 0.75);
+        }
+
+        .site-loader__logo-wrap {
+          position: relative;
+          width: 88px;
+          height: 88px;
+          display: grid;
+          place-items: center;
+          border-radius: 50%;
+          background: rgba(255, 255, 255, 0.94);
+          box-shadow: 0 8px 28px rgba(46, 49, 146, 0.08);
+        }
+
+        .site-loader__logo {
+          display: block;
+          width: 72px;
+          height: 72px;
+          object-fit: contain;
+          filter: drop-shadow(0 3px 7px rgba(46, 49, 146, 0.09));
+        }
+
+        @keyframes site-loader-enter {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+
+        @keyframes site-loader-spin {
+          to {
+            transform: rotate(360deg);
+          }
+        }
+
+        @media (max-width: 640px) {
+          .site-loader__content {
+            width: 132px;
+            height: 132px;
+          }
+
+          .site-loader__dot {
+            transform: rotate(var(--dot-angle)) translateX(58px);
+          }
+
+          .site-loader__logo-wrap {
+            width: 78px;
+            height: 78px;
+          }
+
+          .site-loader__logo {
+            width: 64px;
+            height: 64px;
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .site-loader,
+          .site-loader__orbit {
+            animation-duration: 2.8s;
+          }
+        }
+      `}</style>
+
+      <div className="site-loader__content">
+        <span className="site-loader__orbit" aria-hidden="true">
+          <i className="site-loader__dot" style={{ "--dot-angle": "0deg" }} />
+          <i className="site-loader__dot" style={{ "--dot-angle": "30deg" }} />
+          <i className="site-loader__dot" style={{ "--dot-angle": "60deg" }} />
+          <i className="site-loader__dot" style={{ "--dot-angle": "90deg" }} />
+          <i className="site-loader__dot" style={{ "--dot-angle": "120deg" }} />
+          <i className="site-loader__dot" style={{ "--dot-angle": "150deg" }} />
+          <i className="site-loader__dot" style={{ "--dot-angle": "180deg" }} />
+          <i className="site-loader__dot" style={{ "--dot-angle": "210deg" }} />
+          <i className="site-loader__dot" style={{ "--dot-angle": "240deg" }} />
+          <i className="site-loader__dot" style={{ "--dot-angle": "270deg" }} />
+          <i className="site-loader__dot" style={{ "--dot-angle": "300deg" }} />
+          <i className="site-loader__dot" style={{ "--dot-angle": "330deg" }} />
+        </span>
+        <div className="site-loader__logo-wrap">
           <img
+            className="site-loader__logo"
             src="/logo/IPCL_logo.png"
-            alt=""
-            width="40"
-            height="40"
-            decoding="async"
-            className="h-10 w-10 object-contain"
+            alt="IPCL"
+            draggable="false"
           />
         </div>
-        <div>
-          <p className="text-sm font-semibold text-white">Preparing introduction</p>
-          <p className="mt-1 text-xs text-slate-400">Innovation Plastic Cans Ltd.</p>
-        </div>
-        <div className="flex gap-2" aria-hidden="true">
-          {[0, 1, 2].map((dot) => (
-            <span key={dot} className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#00AEEF] shadow-[0_0_9px_rgba(0,174,239,0.7)]" style={{ animationDelay: `${dot * 160}ms` }} />
-          ))}
-        </div>
       </div>
+
+      <span className="sr-only">Please wait, loading...</span>
     </div>
   );
 };

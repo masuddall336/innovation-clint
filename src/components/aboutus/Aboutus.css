@@ -2,6 +2,7 @@
 .about-us {
   width: 100%;
   display: flex;
+  background-color: #fff;
   justify-content: center;
   overflow: hidden;
 }

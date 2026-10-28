@@ -9,7 +9,7 @@
 
 .footer-bg {
     position: relative;
-    /* background-image: url('../../../public/img/footer.png'); */
+    background-image: url('../../../public/img/footer.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -29,9 +29,10 @@
     z-index: 1;
 
     /* gradient: lighter near bottom for readability */
-    background: linear-gradient(to bottom,
-            rgba(238, 236, 236, 0.05),
-            #0b6d5470);
+    background: linear-gradient(105deg,
+            rgba(46, 49, 146, 0.82) 0%,
+            rgba(7, 17, 31, 0.72) 48%,
+            rgba(0, 166, 81, 0.58) 100%);
 }
 
 /* =========================
@@ -42,8 +43,11 @@
     z-index: 3;
     display: flex;
     justify-content: space-between;
-    gap: 40px;
-    padding: 10px 40px;
+    align-items: flex-start;
+    gap: clamp(16px, 3vw, 36px);
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 26px 40px 24px;
     color: #fff;
 }
 
@@ -52,25 +56,50 @@
 ========================= */
 .footer-column {}
 
+.footer-column {
+    flex: 1;
+    min-width: 150px;
+}
+
+.footer-column:first-child {
+    flex: 1.35;
+}
+
 .footer-column h3 {
-    color: #2E3192;
-    margin-bottom: 15px;
+    position: relative;
+    color: #fff;
+    padding-bottom: 7px;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.75);
+    margin-bottom: 10px;
+    letter-spacing: 0.02em;
     font-weight: 900;
-    font-size: x-large;
+    font-size: 17px;
+}
+
+.footer-column h3::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 34px;
+    height: 3px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #00A651, #fff);
 }
 
 .footer-column p {
-    font-size: 14px;
-    margin-bottom: 8px;
-    line-height: 1.6;
-    color: rgb(113 113 113);
+    font-size: 12px;
+    margin-bottom: 5px;
+    line-height: 1.45;
+    color: rgba(255, 255, 255, 0.92);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.75);
 }
 
 /* =========================
    LOGO
 ========================= */
 .footer-logo {
-    max-width: 280px;
+    max-width: 170px;
 }
 
 /* =========================
@@ -82,14 +111,15 @@
 }
 
 .footer-menu li {
-    margin-bottom: 10px;
+    margin-bottom: 3px;
 }
 
 .footer-menu-title {
     cursor: pointer;
-    font-size: 18px;
+    font-size: 14px;
     transition: 0.3s;
-    color: rgb(113 113 113);
+    color: rgba(255, 255, 255, 0.92);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.75);
 }
 
 .footer-menu-title:hover {
@@ -112,26 +142,27 @@
    COMPANY NAME
 ========================= */
 .footer-company-name {
-    font-size: 25px;
-    margin-bottom: 8px;
+    font-size: 15px;
+    margin-bottom: 6px;
     font-weight: 600;
-    color: rgb(113 113 113);
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.75);
 }
 
 /* =========================
    SOCIAL ICONS
 ========================= */
 .social-icons {
-    margin-top: 10px;
+    margin-top: 7px;
     display: flex;
     gap: 12px;
     flex-wrap: wrap;
 }
 
 .social-icons img {
-    width: 28px;
+    width: 24px;
     background: white;
-    padding: 5px;
+    padding: 4px;
     border-radius: 4px;
     transition: 0.3s;
 }
@@ -145,10 +176,12 @@
 ========================= */
 .footer-copyright {
     text-align: center;
-    padding: 12px;
-    background: linear-gradient(to right, #00A651, #2E3192);
+    padding: 8px 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.16);
+    background: linear-gradient(90deg, #00A651 0%, #1768a6 48%, #2E3192 100%);
     color: white;
-    font-size: 14px;
+    font-size: 13px;
+    letter-spacing: 0.02em;
 }
 
 .footer-copyright a {
@@ -200,8 +233,8 @@
     .footer-content {
         flex-direction: column;
         text-align: center;
-        padding: 50px 20px 80px;
-        gap: 30px;
+        padding: 24px 20px;
+        gap: 18px;
     }
 
     .social-icons {

@@ -2,11 +2,13 @@
 
 body {
    font-family: "Ubuntu", sans-serif;
+   background-color: #fff;
 }
 
 html {
   scrollbar-color: #2E3192 #07111f;
   scrollbar-width: thin;
+  scrollbar-gutter: stable;
 }
 
 ::-webkit-scrollbar {
