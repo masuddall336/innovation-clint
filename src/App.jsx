@@ -1,12 +1,12 @@
 
 import './App.css'
 import Carousel from './components/carousel/Carousel'
-import MissionVision from './components/mi&vi/Misionvision'
 import Aboutus from './components/aboutus/Aboutus'
 import Goalprinciple from './components/Goal_Principal/Goalprinciple'
 import ScrollTop from './components/ScrollTop'
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import ProductsScrolling from './components/ProductsScrolling'
+import MissionVision from './components/mi&vi/Misionvision'
 
 function App() {
 
@@ -24,7 +24,7 @@ function App() {
         <Carousel></Carousel>
         <Aboutus></Aboutus>
         <ProductsScrolling></ProductsScrolling>
-        <MissionVision></MissionVision>
+        <MissionVision />
         <Goalprinciple></Goalprinciple>
       </div>
 

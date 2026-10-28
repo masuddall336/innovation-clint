@@ -1,20 +1,19 @@
 
 import { AuthContext } from "./AuthContext";
-
-import {
-  createUserWithEmailAndPassword,
-  GoogleAuthProvider,
-  onAuthStateChanged,
-  sendEmailVerification,
-  sendPasswordResetEmail,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  signOut,
-  updateProfile,
-} from "firebase/auth";
-
-import { auth } from "./firebase.init";
 import { useEffect, useState } from "react";
+
+let firebasePromise;
+
+const loadFirebase = () => {
+  if (!firebasePromise) {
+    firebasePromise = Promise.all([
+      import("firebase/auth"),
+      import("./firebase.init"),
+    ]).then(([authSdk, firebase]) => ({ ...authSdk, ...firebase }));
+  }
+
+  return firebasePromise;
+};
 
 /* -------------------------------------------------------
    Generic timeout helper
@@ -162,24 +161,47 @@ const AuthProvider = ({ children }) => {
      Firebase auth listener
   ----------------------------------------------------- */
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      /*
-        Only expose verified users to the rest of the app.
-      */
-      setUser(
-        currentUser?.emailVerified
-          ? currentUser
-          : null
-      );
-    });
+    let active = true;
+    let unsubscribe = () => {};
 
-    return unsubscribe;
+    const attachAuthListener = () => {
+      loadFirebase()
+        .then(({ auth, onAuthStateChanged }) => {
+          if (!active) return;
+
+          unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+            setUser(currentUser?.emailVerified ? currentUser : null);
+          });
+        })
+        .catch((error) => {
+          console.error("Firebase auth initialization failed:", error);
+        });
+    };
+
+    let idleCallbackId;
+    let timeoutId;
+
+    if ("requestIdleCallback" in window) {
+      idleCallbackId = window.requestIdleCallback(attachAuthListener, {
+        timeout: 1500,
+      });
+    } else {
+      timeoutId = window.setTimeout(attachAuthListener, 300);
+    }
+
+    return () => {
+      active = false;
+      if (idleCallbackId !== undefined) window.cancelIdleCallback(idleCallbackId);
+      if (timeoutId !== undefined) window.clearTimeout(timeoutId);
+      unsubscribe();
+    };
   }, []);
 
   /* -----------------------------------------------------
      EMAIL LOGIN
   ----------------------------------------------------- */
   const singInUser = async (email, password) => {
+    const { auth, signInWithEmailAndPassword } = await loadFirebase();
     const credential = await signInWithEmailAndPassword(
       auth,
       email,
@@ -209,6 +231,7 @@ const AuthProvider = ({ children }) => {
      GOOGLE LOGIN
   ----------------------------------------------------- */
   const signInWithGoogle = async () => {
+    const { GoogleAuthProvider, signInWithPopup, auth } = await loadFirebase();
     const provider = new GoogleAuthProvider();
 
     provider.setCustomParameters({
@@ -228,6 +251,14 @@ const singUpUser = async ({
     email,
     password,
 }) => {
+  const {
+    auth,
+    createUserWithEmailAndPassword,
+    sendEmailVerification,
+    signInWithEmailAndPassword,
+    updateProfile,
+  } = await loadFirebase();
+
     let user = auth.currentUser?.email === email && !auth.currentUser.emailVerified
         ? auth.currentUser
         : null;
@@ -357,6 +388,7 @@ const singUpUser = async ({
      RESEND VERIFICATION EMAIL
   ----------------------------------------------------- */
 const resendVerificationEmail = async (email, password) => {
+  const { auth, sendEmailVerification, signInWithEmailAndPassword } = await loadFirebase();
     let user = auth.currentUser?.email === email
         ? auth.currentUser
         : null;
@@ -389,13 +421,18 @@ const resendVerificationEmail = async (email, password) => {
   /* -----------------------------------------------------
      PASSWORD RESET
   ----------------------------------------------------- */
-  const resetPassword = (email) =>
-    sendPasswordResetEmail(auth, email);
+  const resetPassword = async (email) => {
+    const { auth, sendPasswordResetEmail } = await loadFirebase();
+    return sendPasswordResetEmail(auth, email);
+  };
 
   /* -----------------------------------------------------
      LOGOUT
   ----------------------------------------------------- */
-  const singOutUser = () => signOut(auth);
+  const singOutUser = async () => {
+    const { auth, signOut } = await loadFirebase();
+    return signOut(auth);
+  };
 
   /* -----------------------------------------------------
      CONTEXT VALUE

@@ -5,9 +5,9 @@ import { lazy } from 'react'
 import { createBrowserRouter } from 'react-router-dom'
 import { RouterProvider } from 'react-router-dom'
 import Root from './Root.jsx'
+import App from './App.jsx'
 import { HelmetProvider } from 'react-helmet-async'
 import AuthProvider from './firebase/AuthProvider.jsx'
-import Video from './components/video/Video.jsx'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -21,7 +21,6 @@ const queryClient = new QueryClient({
   },
 })
 
-const App = lazy(() => import('./App.jsx'))
 const Sustainability = lazy(() => import('./components/sastainability/Sustainability.jsx'))
 const Contactus = lazy(() => import('./components/contactus/Contactus.jsx'))
 const Qc_Qa = lazy(() => import('./components/qc&qa/Qc_Qa.jsx'))
@@ -111,7 +110,6 @@ let router = createBrowserRouter([
 createRoot(document.getElementById('root')).render(
   <QueryClientProvider client={queryClient}>
     <HelmetProvider>
-      <Video />
       <AuthProvider>
         <RouterProvider router={router}>
         </RouterProvider>
@@ -119,4 +117,3 @@ createRoot(document.getElementById('root')).render(
     </HelmetProvider>
   </QueryClientProvider>
 )
-

@@ -68,6 +68,8 @@ export default function DisplayProducts({ product, handleDelete }) {
             <img
               src={img_url}
               alt={name}
+              loading="lazy"
+              decoding="async"
               className="absolute inset-0 w-full h-full object-cover object-bottom"
             />
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950/15 via-transparent to-white/10" />

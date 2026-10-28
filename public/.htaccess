@@ -1,6 +1,21 @@
 Options -MultiViews
 DirectoryIndex index.html
 
+# Always fetch the current app shell, while hashed Vite assets can be cached safely.
+<IfModule mod_headers.c>
+  <FilesMatch "^(index\.html)$">
+    Header always set Cache-Control "no-cache, no-store, must-revalidate"
+    Header always set Pragma "no-cache"
+    Header always set Expires "0"
+  </FilesMatch>
+
+  <FilesMatch "\.(js|css)$">
+    Header always set Cache-Control "no-cache, no-store, must-revalidate"
+    Header always set Pragma "no-cache"
+    Header always set Expires "0"
+  </FilesMatch>
+</IfModule>
+
 <IfModule mod_mime.c>
   AddType application/javascript .js .mjs
   AddType text/css .css

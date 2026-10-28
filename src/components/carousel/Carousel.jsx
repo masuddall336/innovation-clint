@@ -1,17 +1,11 @@
 import React, { useState, useEffect } from "react";
 import "./Carosel.css";
 
-// Images
-import slide3Img from "../../../public/img/Slider_3.png";
-import slide1Img from "../../../public/img/Slider_4.jpg";
-import slide2Img from "../../../public/img/Slider_2.png";
-import slide4Img from "../../../public/img/Slider_1.png";
-
 const slides = [
-  { image: slide1Img, fixedText: "We Provide", changingTexts: ["Eco Friendly Environment"] },
-  { image: slide2Img, fixedText: "Our", changingTexts: ["In Mould Product"] },
-  { image: slide3Img, fixedText: "We Produce", changingTexts: ["Reliable Plastic Packaging Solutions"] },
-  { image: slide4Img, fixedText: "We Produce", changingTexts: ["Innovative Packaging"] }
+  { image: "/img/Slider_4.jpg", fixedText: "We Provide", changingTexts: ["Eco Friendly Environment"] },
+  { image: "/img/Slider_2.png", fixedText: "Our", changingTexts: ["In Mould Product"] },
+  { image: "/img/Slider_3.png", fixedText: "We Produce", changingTexts: ["Reliable Plastic Packaging Solutions"] },
+  { image: "/img/Slider_1.png", fixedText: "We Produce", changingTexts: ["Innovative Packaging"] }
 ];
 
 const Carousel = () => {
@@ -50,7 +44,9 @@ const Carousel = () => {
           key={index}
           src={slide.image}
           alt="carousel"
-          loading="lazy"
+          loading={index === 0 ? "eager" : "lazy"}
+          fetchpriority={index === 0 ? "high" : "low"}
+          decoding="async"
           className={`slide-image ${index === currentSlide ? "active" : ""}`}
         />
       ))}

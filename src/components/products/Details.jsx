@@ -56,7 +56,7 @@ const Details = ({ product }) => {
     <div className="product-page min-h-screen bg-[#edf0f6] pb-16">
       <section className="product-page-banner relative isolate h-[220px] overflow-hidden sm:h-[260px] lg:h-[300px]" aria-label="Product collection banner">
         <img
-          src="/img/Product_Details_section_banner.png"
+          src="/img/product_section_banner_Compressed.png"
           alt="Plastic packaging products at our manufacturing facility"
           className="absolute inset-0 h-full w-full object-cover object-center"
           fetchPriority="high"

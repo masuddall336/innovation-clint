@@ -28,7 +28,7 @@ const ProductsScrolling = () => {
 
         {[...products, ...products].map((img, index) => (
           <div className="logo-item" key={index}>
-            <img src={img} alt="product logo" />
+            <img src={img} alt="product logo" loading="lazy" decoding="async" />
           </div>
         ))}
 

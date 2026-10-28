@@ -118,8 +118,8 @@
 
 .qcqa-unique-video-wrapper {
   position: relative;
-  width: 80%;
-  max-width: 900px;
+  width: 100%;
+  max-width: none;
   background: #000;
   border-radius: 10px;
   overflow: hidden;
